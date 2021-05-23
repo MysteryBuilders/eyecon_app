@@ -3,6 +3,9 @@ import 'dart:io';
 
 
 import 'package:eyecon_app/providers/model_hud.dart';
+import 'package:eyecon_app/screens/login_screen.dart';
+import 'package:eyecon_app/screens/main_screen.dart';
+import 'package:eyecon_app/screens/register_screen.dart';
 import 'package:eyecon_app/screens/splash_screen.dart';
 import 'package:eyecon_app/utilities/constants.dart';
 import 'package:flutter/material.dart';
@@ -162,6 +165,9 @@ class _MyAppState extends State<MyApp> {
                     initialRoute: SplashScreen.id,
                     routes: {
                       SplashScreen.id: (context) => SplashScreen(),
+                      RegisterScreen.id: (context) => RegisterScreen(),
+                      LoginScreen.id: (context) => LoginScreen(),
+                      MainScreen.id: (context) => MainScreen(),
                               },
 
                   ),
