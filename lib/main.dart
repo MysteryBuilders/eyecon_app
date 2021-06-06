@@ -3,6 +3,7 @@ import 'dart:io';
 
 
 import 'package:eyecon_app/providers/model_hud.dart';
+import 'package:eyecon_app/screens/forget_password_screen.dart';
 import 'package:eyecon_app/screens/login_screen.dart';
 import 'package:eyecon_app/screens/main_screen.dart';
 import 'package:eyecon_app/screens/register_screen.dart';
@@ -168,6 +169,7 @@ class _MyAppState extends State<MyApp> {
                       RegisterScreen.id: (context) => RegisterScreen(),
                       LoginScreen.id: (context) => LoginScreen(),
                       MainScreen.id: (context) => MainScreen(),
+                      ForgetPasswordScreen.id: (context) => ForgetPasswordScreen(),
                               },
 
                   ),
