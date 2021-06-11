@@ -1,5 +1,6 @@
 import 'package:eyecon_app/providers/model_hud.dart';
 import 'package:eyecon_app/screens/forget_password_screen.dart';
+import 'package:eyecon_app/screens/main_screen.dart';
 import 'package:eyecon_app/screens/register_screen.dart';
 import 'package:eyecon_app/widgets/name_textfield.dart';
 import 'package:eyecon_app/widgets/password_textfield.dart';
@@ -195,6 +196,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return TextButton(
       style: flatButtonStyle,
       onPressed: () {
+        Navigator.pushReplacementNamed(context, MainScreen.id);
 
       },
       child: Text(text,style: TextStyle(
@@ -218,7 +220,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return TextButton(
       style: flatButtonStyle,
       onPressed: () {
-
+        Navigator.pushReplacementNamed(context, MainScreen.id);
       },
       child: Text(text,style: TextStyle(
           color: Color(0xFFFFFFFF),
