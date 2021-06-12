@@ -102,6 +102,7 @@ class _MainScreenState extends State<MainScreen> {
               Container(height: 20.h,),
               ListTile(
                 onTap: (){
+                  Navigator.pop(context);
 
                 },
                 leading: SizedBox(
