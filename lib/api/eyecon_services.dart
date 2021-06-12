@@ -4,11 +4,15 @@ import 'package:dio/dio.dart';
 import 'package:eyecon_app/localization/localization_methods.dart';
 import 'package:eyecon_app/model/categories_model.dart';
 import 'package:eyecon_app/model/currency_model.dart';
+import 'package:eyecon_app/model/dis_like_model.dart';
 import 'package:eyecon_app/model/faq_model.dart';
 import 'package:eyecon_app/model/home_model.dart';
+import 'package:eyecon_app/model/like_model.dart';
+import 'package:eyecon_app/model/login_model.dart';
 import 'package:eyecon_app/model/page_model.dart';
 import 'package:eyecon_app/model/product_details_model.dart';
 import 'package:eyecon_app/model/products_model.dart';
+import 'package:eyecon_app/model/register_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class eyeconServices{
@@ -246,6 +250,121 @@ print(response.data);
     }
 
     return faqModel;
+
+
+  }
+  Future<RegisterModel> register( Map map)async{
+
+
+
+    String body = json.encode(map);
+
+    RegisterModel registerModel;
+
+    var dio = Dio();
+
+
+    var response = await dio.post(TAG_BASE_URL + "processregistration",
+        options: Options(contentType: 'application/json'),
+        data: body);
+
+    if (response.statusCode == 200) {
+      print(response.data);
+
+
+
+
+      registerModel =
+          RegisterModel.fromJson(Map<String, dynamic>.from(response.data));
+    }
+
+    return registerModel;
+
+
+  }
+  Future<LoginModel> login( Map map)async{
+
+
+
+    String body = json.encode(map);
+
+    LoginModel loginModel;
+
+    var dio = Dio();
+
+
+    var response = await dio.post(TAG_BASE_URL + "processlogin",
+        options: Options(contentType: 'application/json'),
+        data: body);
+
+    if (response.statusCode == 200) {
+      print(response.data);
+
+
+
+
+      loginModel =
+          LoginModel.fromJson(json.decode(response.data));
+    }
+
+    return loginModel;
+
+
+  }
+  Future<LikeModel> likeProduct(Map map )async{
+
+    LikeModel likeModel;
+    var dio = Dio();
+
+    FormData formData = new FormData.fromMap(map);
+    print(formData.fields);
+
+    try {
+      var response = await dio.post(TAG_BASE_URL + "likeproduct",
+          options: Options(contentType: 'multipart/form-data'),
+
+          data: formData);
+      print(response.data);
+
+      if (response.statusCode == 200) {
+        likeModel = LikeModel.fromJson(json.decode(response.data));
+
+
+
+      }
+    }on DioError catch(e) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx and is also not 304.
+
+
+
+
+    }
+    return likeModel;
+
+
+  }
+  Future<DisLikeModel> disLikeProduct(String productId,String customerId )async{
+
+    DisLikeModel disLikeModel;
+    var dio = Dio();
+
+
+    var response = await dio.post(TAG_BASE_URL + "unlikeproduct?liked_products_id= ${productId}&liked_customers_id= ${customerId}"
+        );
+
+    if (response.statusCode == 200) {
+
+
+
+
+      disLikeModel = DisLikeModel.fromJson(json.decode(response.data));
+
+    }
+
+    return disLikeModel;
+
+
 
 
   }

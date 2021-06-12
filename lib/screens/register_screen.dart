@@ -1,3 +1,8 @@
+import 'dart:io';
+
+import 'package:device_info/device_info.dart';
+import 'package:eyecon_app/api/eyecon_services.dart';
+import 'package:eyecon_app/model/register_model.dart';
 import 'package:eyecon_app/providers/model_hud.dart';
 import 'package:eyecon_app/screens/login_screen.dart';
 import 'package:eyecon_app/widgets/name_textfield.dart';
@@ -8,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
+import 'package:unique_identifier/unique_identifier.dart';
 class RegisterScreen extends StatefulWidget {
   static String id = 'RegisterScreen';
   @override
@@ -21,6 +27,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   String password;
   String confirmPassword;
   String phoneNumber;
+  String uniqueId = "Unknown";
   GlobalKey<FormState> _globalKey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   @override
@@ -200,6 +207,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return TextButton(
       style: flatButtonStyle,
       onPressed: () {
+        validate(context);
 
       },
       child: Text(text,style: TextStyle(
@@ -208,5 +216,51 @@ class _RegisterScreenState extends State<RegisterScreen> {
           fontWeight: FontWeight.w600
       ),),
     );
+  }
+
+  void validate(BuildContext context) async {
+    if(_globalKey.currentState.validate()) {
+      _globalKey.currentState.save();
+      if (confirmPassword == password) {
+        final modelHud = Provider.of<ModelHud>(context, listen: false);
+        modelHud.changeIsLoading(true);
+        String deviceType = "";
+        if(Platform.isAndroid){
+          deviceType = "android";
+          uniqueId = await UniqueIdentifier.serial;
+        }else{
+          deviceType = "ios";
+          final DeviceInfoPlugin deviceInfoPlugin = new DeviceInfoPlugin();
+          var data = await deviceInfoPlugin.iosInfo;
+          uniqueId = data.identifierForVendor;
+        }
+        Map map = Map();
+        map['customers_full_name'] = name;
+        map['email'] = email;
+        map['password'] = password;
+        map['retype_password'] = confirmPassword;
+        map['customers_telephone'] = phoneNumber;
+        map['device_id'] = uniqueId;
+        map['device_type'] = deviceType;
+        eyeconServices services = eyeconServices();
+
+        RegisterModel registerModel = await services.register(map);
+        String success = registerModel.success;
+        modelHud.changeIsLoading(false);
+        if(success == "1"){
+          _scaffoldKey.currentState.showSnackBar(
+              SnackBar(content: Text(registerModel.message)));
+          Navigator.pushReplacementNamed(context, LoginScreen.id);
+        }else{
+          _scaffoldKey.currentState.showSnackBar(
+              SnackBar(content: Text(registerModel.message)));
+        }
+
+      }else{
+        _scaffoldKey.currentState.showSnackBar(
+            SnackBar(content: Text('password are not equal')));
+
+      }
+    }
   }
 }

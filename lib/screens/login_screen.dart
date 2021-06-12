@@ -1,7 +1,11 @@
+import 'package:eyecon_app/api/eyecon_services.dart';
+import 'package:eyecon_app/model/login_model.dart';
 import 'package:eyecon_app/providers/model_hud.dart';
 import 'package:eyecon_app/screens/forget_password_screen.dart';
 import 'package:eyecon_app/screens/main_screen.dart';
 import 'package:eyecon_app/screens/register_screen.dart';
+import 'package:eyecon_app/utilities/constants.dart';
+import 'package:eyecon_app/utilities/shared_prefs.dart';
 import 'package:eyecon_app/widgets/name_textfield.dart';
 import 'package:eyecon_app/widgets/password_textfield.dart';
 import 'package:flutter/material.dart';
@@ -196,7 +200,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return TextButton(
       style: flatButtonStyle,
       onPressed: () {
-        Navigator.pushReplacementNamed(context, MainScreen.id);
+    validate(context);
 
       },
       child: Text(text,style: TextStyle(
@@ -220,7 +224,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return TextButton(
       style: flatButtonStyle,
       onPressed: () {
-        Navigator.pushReplacementNamed(context, MainScreen.id);
+        validate(context);
       },
       child: Text(text,style: TextStyle(
           color: Color(0xFFFFFFFF),
@@ -339,5 +343,38 @@ class _LoginScreenState extends State<LoginScreen> {
         ],
       ),
     );
+  }
+  void validate(BuildContext context) async {
+    if(_globalKey.currentState.validate()) {
+      _globalKey.currentState.save();
+
+        final modelHud = Provider.of<ModelHud>(context, listen: false);
+        modelHud.changeIsLoading(true);
+
+        Map map = Map();
+        map['email'] = _fullName;
+        map['password'] = _password;
+
+        eyeconServices services = eyeconServices();
+
+        LoginModel loginModel = await services.login(map);
+        String success = loginModel.success;
+        modelHud.changeIsLoading(false);
+        if(success == "1"){
+          SharedPref sharedPref = SharedPref();
+          await sharedPref.save(kUserModel, loginModel);
+          await sharedPref.saveBool(kIsLogin, true);
+          await sharedPref.saveString("email", _fullName);
+          await sharedPref.saveString("password", _password);
+          _scaffoldKey.currentState.showSnackBar(
+              SnackBar(content: Text(loginModel.message)));
+          Navigator.pushReplacementNamed(context, MainScreen.id);
+        }else{
+          _scaffoldKey.currentState.showSnackBar(
+              SnackBar(content: Text(loginModel.message)));
+        }
+
+
+    }
   }
 } 

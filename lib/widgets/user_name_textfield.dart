@@ -32,7 +32,6 @@ class UserNameTextField extends StatelessWidget {
     this.context = context;
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
-    TextEditingController myController = TextEditingController()..text = mText;
 
     return Container(
 
@@ -49,7 +48,7 @@ class UserNameTextField extends StatelessWidget {
           Container(
 
             child: TextFormField(
-              controller: myController,
+
 
               textAlign: TextAlign.start,
               textCapitalization: TextCapitalization.words,
