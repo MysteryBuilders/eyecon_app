@@ -6,6 +6,7 @@ import 'package:eyecon_app/model/categories_model.dart';
 import 'package:eyecon_app/model/currency_model.dart';
 import 'package:eyecon_app/model/dis_like_model.dart';
 import 'package:eyecon_app/model/faq_model.dart';
+import 'package:eyecon_app/model/favorite_products_model.dart';
 import 'package:eyecon_app/model/home_model.dart';
 import 'package:eyecon_app/model/like_model.dart';
 import 'package:eyecon_app/model/login_model.dart';
@@ -365,6 +366,40 @@ print(response.data);
     return disLikeModel;
 
 
+
+
+  }
+  Future<FavoriteProductsModel> favoriteProducts(Map map)async{
+
+
+    String body = json.encode(map);
+
+    FavoriteProductsModel favoriteProductsModel;
+
+    var dio = Dio();
+
+
+    var response = await dio.post(TAG_BASE_URL + "mylikeproduct",
+        options: Options(contentType: 'application/json'),
+        data: body);
+
+    if (response.statusCode == 200) {
+      print(response.data);
+      try{
+
+
+
+        favoriteProductsModel =    FavoriteProductsModel.fromJson(json.decode(response.data));
+
+
+      }
+      catch(e){
+        print(e.toString());
+      }
+
+    }
+
+    return favoriteProductsModel;
 
 
   }

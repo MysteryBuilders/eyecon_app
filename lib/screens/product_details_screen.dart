@@ -96,7 +96,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
           leading:
           GestureDetector(
             onTap: (){
-              Navigator.pop(context);
+              Navigator.of(context).pop({'selection':true});
 
             },
             child: Icon(Icons.arrow_back_ios_outlined,color: Color(0xFFE4937C),size: 20.h,),

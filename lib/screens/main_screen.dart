@@ -3,13 +3,17 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:eyecon_app/api/eyecon_services.dart';
 import 'package:eyecon_app/model/home_model.dart';
 import 'package:eyecon_app/screens/categories_screen.dart';
+import 'package:eyecon_app/screens/login_screen.dart';
+import 'package:eyecon_app/screens/my_account.dart';
 import 'package:eyecon_app/screens/notification_screen.dart';
 import 'package:eyecon_app/screens/settings_screen.dart';
+import 'package:eyecon_app/screens/wishlist-screen.dart';
 import 'package:eyecon_app/utilities/constants.dart';
 import 'package:eyecon_app/widgets/action_icon.dart';
 import 'package:eyecon_app/widgets/notification_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 class MainScreen extends StatefulWidget {
   static String id = 'MainScreen';
   @override
@@ -159,6 +163,7 @@ class _MainScreenState extends State<MainScreen> {
               ),
               ListTile(
                 onTap: (){
+                  isLoggedIn();
 
                 },
                 leading: SizedBox(
@@ -176,6 +181,7 @@ class _MainScreenState extends State<MainScreen> {
               ),
               ListTile(
                 onTap: (){
+                  myAccount();
 
                 },
                 leading: SizedBox(
@@ -809,5 +815,41 @@ class _MainScreenState extends State<MainScreen> {
           fontWeight: FontWeight.bold
       ),),
     );
+  }
+  void isLoggedIn() async{
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    bool isLoggedIn = sharedPreferences.getBool(kIsLogin)??false;
+    if(isLoggedIn){
+      Navigator.pop(context);
+
+      Navigator.of(context,rootNavigator: true).push(new MaterialPageRoute(builder: (BuildContext context){
+        return new WishListScreen();
+      }));
+    }else{
+      Navigator.pop(context);
+
+      Navigator.of(context,rootNavigator: true).pushReplacement(new MaterialPageRoute(builder: (BuildContext context){
+        return new LoginScreen();
+      }));
+
+    }
+  }
+  void myAccount() async{
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    bool isLoggedIn = sharedPreferences.getBool(kIsLogin)??false;
+    if(isLoggedIn){
+      Navigator.pop(context);
+
+      Navigator.of(context,rootNavigator: true).push(new MaterialPageRoute(builder: (BuildContext context){
+        return new MyAccountScreen();
+      }));
+    }else{
+      Navigator.pop(context);
+
+      Navigator.of(context,rootNavigator: true).pushReplacement(new MaterialPageRoute(builder: (BuildContext context){
+        return new WishListScreen();
+      }));
+
+    }
   }
 }
