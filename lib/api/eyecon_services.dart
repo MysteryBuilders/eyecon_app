@@ -17,6 +17,7 @@ import 'package:eyecon_app/model/product_details_model.dart';
 import 'package:eyecon_app/model/products_model.dart';
 import 'package:eyecon_app/model/register_model.dart';
 import 'package:eyecon_app/model/update_profile_model.dart';
+import 'package:eyecon_app/model/wallet_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class eyeconServices{
@@ -479,10 +480,39 @@ print(response.data);
 
 
       orderModel =
-          OrderModel.fromJson(json.decode(response.data));
+          OrderModel.fromJson(Map<String, dynamic>.from(response.data));
     }
 
     return orderModel;
+
+
+  }
+  Future<WalletModel> wallet( Map map)async{
+
+
+
+    String body = json.encode(map);
+
+    WalletModel walletModel;
+
+    var dio = Dio();
+
+
+    var response = await dio.post(TAG_BASE_URL + "getTotalBlance",
+        options: Options(contentType: 'application/json'),
+        data: body);
+
+    if (response.statusCode == 200) {
+      print(response.data);
+
+
+
+
+      walletModel =
+          WalletModel.fromJson(json.decode(response.data));
+    }
+
+    return walletModel;
 
 
   }
