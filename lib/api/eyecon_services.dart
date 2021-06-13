@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:eyecon_app/localization/localization_methods.dart';
 import 'package:eyecon_app/model/categories_model.dart';
+import 'package:eyecon_app/model/country_model.dart';
 import 'package:eyecon_app/model/currency_model.dart';
 import 'package:eyecon_app/model/dis_like_model.dart';
 import 'package:eyecon_app/model/faq_model.dart';
@@ -10,10 +11,12 @@ import 'package:eyecon_app/model/favorite_products_model.dart';
 import 'package:eyecon_app/model/home_model.dart';
 import 'package:eyecon_app/model/like_model.dart';
 import 'package:eyecon_app/model/login_model.dart';
+import 'package:eyecon_app/model/order_model.dart';
 import 'package:eyecon_app/model/page_model.dart';
 import 'package:eyecon_app/model/product_details_model.dart';
 import 'package:eyecon_app/model/products_model.dart';
 import 'package:eyecon_app/model/register_model.dart';
+import 'package:eyecon_app/model/update_profile_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class eyeconServices{
@@ -37,6 +40,28 @@ class eyeconServices{
     }
 
     return homeModel;
+
+
+  }
+  Future<CountryModel> country()async{
+
+    CountryModel countryModel;
+
+    var dio = Dio();
+
+
+    var response = await dio.post(TAG_BASE_URL + "getcountries");
+
+    if (response.statusCode == 200) {
+
+
+
+
+      countryModel =
+          CountryModel.fromJson(Map<String, dynamic>.from(response.data));
+    }
+
+    return countryModel;
 
 
   }
@@ -403,4 +428,63 @@ print(response.data);
 
 
   }
+  Future<UpdateProfileModel> updateProfile( Map map)async{
+
+
+
+    String body = json.encode(map);
+
+    UpdateProfileModel updateProfileModel;
+
+    var dio = Dio();
+
+
+    var response = await dio.post(TAG_BASE_URL + "updatecustomerinfo",
+        options: Options(contentType: 'application/json'),
+        data: body);
+
+    if (response.statusCode == 200) {
+      print(response.data);
+
+
+
+
+      updateProfileModel =
+          UpdateProfileModel.fromJson(json.decode(response.data));
+    }
+
+    return updateProfileModel;
+
+
+  }
+  Future<OrderModel> orders( Map map)async{
+
+
+
+    String body = json.encode(map);
+
+    OrderModel orderModel;
+
+    var dio = Dio();
+
+
+    var response = await dio.post(TAG_BASE_URL + "getorders",
+        options: Options(contentType: 'application/json'),
+        data: body);
+
+    if (response.statusCode == 200) {
+      print(response.data);
+
+
+
+
+      orderModel =
+          OrderModel.fromJson(json.decode(response.data));
+    }
+
+    return orderModel;
+
+
+  }
+
 }

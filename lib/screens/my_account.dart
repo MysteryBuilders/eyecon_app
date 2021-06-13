@@ -2,14 +2,18 @@ import 'dart:convert';
 
 import 'package:eyecon_app/model/login_model.dart';
 import 'package:eyecon_app/screens/address_screen.dart';
+import 'package:eyecon_app/screens/login_screen.dart';
 import 'package:eyecon_app/screens/orders_screen.dart';
 import 'package:eyecon_app/screens/points_screen.dart';
 import 'package:eyecon_app/screens/profile_screen.dart';
 import 'package:eyecon_app/screens/wallet_screen.dart';
 import 'package:eyecon_app/utilities/constants.dart';
+import 'package:eyecon_app/utilities/shared_prefs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'main_screen.dart';
 class MyAccountScreen extends StatefulWidget {
   const MyAccountScreen({Key key}) : super(key: key);
 
@@ -133,10 +137,10 @@ class _MyAccountScreenState extends State<MyAccountScreen> {
 
                               fontSize: screenUtil.setSp(11)
                           ),),),
-                        Expanded(flex:1,child: Text(loginModel.data[0].fullName,
+                        Expanded(flex:1,child: Text(loginModel.data[0].email,
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                              color: Color(0x888B8B8B),
+                              color: Color(0xFF8B8B8B),
                               fontWeight: FontWeight.w500,
 
                               fontSize: screenUtil.setSp(10)
@@ -144,7 +148,7 @@ class _MyAccountScreenState extends State<MyAccountScreen> {
                         Expanded(flex:1,child: Text("Joined at ${loginModel.data[0].createdAt}",
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                              color: Color(0x888B8B8B),
+                              color: Color(0xFF8B8B8B),
                               fontWeight: FontWeight.w500,
 
                               fontSize: screenUtil.setSp(10)
@@ -331,6 +335,34 @@ class _MyAccountScreenState extends State<MyAccountScreen> {
                         height: 1,
                         color: Color(0x44707070),
                       ),
+                      ListTile(
+                        trailing:SizedBox(
+                            height: 20.h,
+                            width: 20.w, // fixed width and height
+                            child: Icon(Icons.arrow_forward_ios_outlined,size: 20.w,color: Color(0xFF8B8B8B),)
+                        ),
+                        onTap: (){
+                         logout();
+                        },
+                        leading: SizedBox(
+                            height: 20.h,
+                            width: 20.w, // fixed width and height
+                            child: Image.asset('assets/images/logout.png',color: Color(0xFFE4937C),)
+                        ),
+
+                        title: Text('Logout',
+                          style: TextStyle(
+                              color: Color(0xFF000000),
+                              fontSize: screenUtil.setSp(12),
+                              fontWeight: FontWeight.w500
+                          ),),
+                      ),
+                      Container(
+                        width: width,
+                        height: 1,
+                        color: Color(0x44707070),
+                      ),
+
                     ],
                   ),
                 ),
@@ -341,5 +373,11 @@ class _MyAccountScreenState extends State<MyAccountScreen> {
 
       ),
     );
+  }
+
+  void logout() async{
+    SharedPref sharedPref = SharedPref();
+    await sharedPref.saveBool(kIsLogin, false);
+    Navigator.pushReplacementNamed(context, LoginScreen.id);
   }
 }

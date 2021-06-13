@@ -125,8 +125,10 @@ class _MyAppState extends State<MyApp> {
 
 
                         fontFamily: 'Cairo',
-                        accentColor: kSecondaryColor,
-                        primaryColor: kSecondaryColor
+                      accentColor: kSecondaryColor,
+                      primaryColor: kSecondaryColor,
+                      colorScheme: ColorScheme.light(primary: const Color(0xFFE4937C)),
+                      buttonTheme: ButtonThemeData(textTheme: ButtonTextTheme.primary),
 
 
 

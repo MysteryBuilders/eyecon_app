@@ -219,6 +219,7 @@ class _MainScreenState extends State<MainScreen> {
                   ),),
               ),
 
+
             ],
           ),
         ),
@@ -848,7 +849,7 @@ class _MainScreenState extends State<MainScreen> {
       Navigator.pop(context);
 
       Navigator.of(context,rootNavigator: true).pushReplacement(new MaterialPageRoute(builder: (BuildContext context){
-        return new WishListScreen();
+        return new LoginScreen();
       }));
 
     }

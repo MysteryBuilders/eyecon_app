@@ -224,7 +224,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return TextButton(
       style: flatButtonStyle,
       onPressed: () {
-        validate(context);
+        Navigator.pushReplacementNamed(context, MainScreen.id);
       },
       child: Text(text,style: TextStyle(
           color: Color(0xFFFFFFFF),
