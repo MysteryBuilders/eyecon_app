@@ -2,7 +2,9 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:eyecon_app/localization/localization_methods.dart';
+import 'package:eyecon_app/model/address_model.dart';
 import 'package:eyecon_app/model/categories_model.dart';
+import 'package:eyecon_app/model/change_password_model.dart';
 import 'package:eyecon_app/model/country_model.dart';
 import 'package:eyecon_app/model/currency_model.dart';
 import 'package:eyecon_app/model/dis_like_model.dart';
@@ -516,5 +518,62 @@ print(response.data);
 
 
   }
+  Future<AddressModel> address( Map map)async{
 
+
+
+    String body = json.encode(map);
+
+    AddressModel addressModel;
+
+    var dio = Dio();
+
+
+    var response = await dio.post(TAG_BASE_URL + "getDefaultaddress",
+        options: Options(contentType: 'application/json'),
+        data: body);
+
+    if (response.statusCode == 200) {
+      print(response.data);
+
+
+
+
+      addressModel =
+          AddressModel.fromJson(Map<String, dynamic>.from(response.data));
+    }
+
+    return addressModel;
+
+
+  }
+  Future<ChangePasswordModel> forgetPassword( Map map)async{
+
+
+
+    String body = json.encode(map);
+
+    ChangePasswordModel addressModel;
+
+    var dio = Dio();
+
+
+    var response = await dio.post(TAG_BASE_URL + "processforgotpassword",
+        options: Options(contentType: 'application/json'),
+        data: body);
+
+    if (response.statusCode == 200) {
+      print(response.data);
+
+
+
+
+      addressModel =  ChangePasswordModel.fromJson(json.decode(response.data));
+
+    }
+
+    return addressModel;
+
+
+  }
 }

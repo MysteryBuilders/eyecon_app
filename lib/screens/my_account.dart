@@ -306,35 +306,7 @@ class _MyAccountScreenState extends State<MyAccountScreen> {
                         height: 1,
                         color: Color(0x44707070),
                       ),
-                      ListTile(
-                        trailing:SizedBox(
-                            height: 20.h,
-                            width: 20.w, // fixed width and height
-                            child: Icon(Icons.arrow_forward_ios_outlined,size: 20.w,color: Color(0xFF8B8B8B),)
-                        ),
-                        onTap: (){
-                          Navigator.of(context,rootNavigator: true).push(new MaterialPageRoute(builder: (BuildContext context){
-                            return new PointsScreen();
-                          }));
-                        },
-                        leading: SizedBox(
-                            height: 20.h,
-                            width: 20.w, // fixed width and height
-                            child: Image.asset('assets/images/points_icon.png')
-                        ),
 
-                        title: Text('EYECON Points',
-                          style: TextStyle(
-                              color: Color(0xFF000000),
-                              fontSize: screenUtil.setSp(12),
-                              fontWeight: FontWeight.w500
-                          ),),
-                      ),
-                      Container(
-                        width: width,
-                        height: 1,
-                        color: Color(0x44707070),
-                      ),
                       ListTile(
                         trailing:SizedBox(
                             height: 20.h,

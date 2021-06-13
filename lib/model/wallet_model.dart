@@ -1,63 +1,57 @@
-/// success : "1"
-/// wallet_data : {"total":400}
-/// message : "Wallet added successfully."
-
 class WalletModel {
   String _success;
-  Wallet_data _walletData;
+  WalletData _walletData;
   String _message;
 
+  WalletModel({String success, WalletData walletData, String message}) {
+    this._success = success;
+    this._walletData = walletData;
+    this._message = message;
+  }
+
   String get success => _success;
-  Wallet_data get walletData => _walletData;
+  set success(String success) => _success = success;
+  WalletData get walletData => _walletData;
+  set walletData(WalletData walletData) => _walletData = walletData;
   String get message => _message;
+  set message(String message) => _message = message;
 
-  WalletModel({
-      String success, 
-      Wallet_data walletData, 
-      String message}){
-    _success = success;
-    _walletData = walletData;
-    _message = message;
-}
-
-  WalletModel.fromJson(dynamic json) {
-    _success = json["success"];
-    _walletData = json["wallet_data"] != null ? Wallet_data.fromJson(json["walletData"]) : null;
-    _message = json["message"];
+  WalletModel.fromJson(Map<String, dynamic> json) {
+    _success = json['success'];
+    _walletData = json['wallet_data'] != null
+        ? new WalletData.fromJson(json['wallet_data'])
+        : null;
+    _message = json['message'];
   }
 
   Map<String, dynamic> toJson() {
-    var map = <String, dynamic>{};
-    map["success"] = _success;
-    if (_walletData != null) {
-      map["wallet_data"] = _walletData.toJson();
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['success'] = this._success;
+    if (this._walletData != null) {
+      data['wallet_data'] = this._walletData.toJson();
     }
-    map["message"] = _message;
-    return map;
+    data['message'] = this._message;
+    return data;
   }
-
 }
 
-/// total : 400
-
-class Wallet_data {
+class WalletData {
   int _total;
 
+  WalletData({int total}) {
+    this._total = total;
+  }
+
   int get total => _total;
+  set total(int total) => _total = total;
 
-  Wallet_data({
-      int total}){
-    _total = total;
-}
-
-  Wallet_data.fromJson(dynamic json) {
-    _total = json["total"];
+  WalletData.fromJson(Map<String, dynamic> json) {
+    _total = json['total'];
   }
 
   Map<String, dynamic> toJson() {
-    var map = <String, dynamic>{};
-    map["total"] = _total;
-    return map;
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['total'] = this._total;
+    return data;
   }
-
 }
