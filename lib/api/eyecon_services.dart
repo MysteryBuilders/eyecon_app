@@ -2,12 +2,15 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:eyecon_app/localization/localization_methods.dart';
+import 'package:eyecon_app/model/add_address_model.dart';
 import 'package:eyecon_app/model/address_model.dart';
 import 'package:eyecon_app/model/categories_model.dart';
 import 'package:eyecon_app/model/change_password_model.dart';
+import 'package:eyecon_app/model/city_model.dart';
 import 'package:eyecon_app/model/country_model.dart';
 import 'package:eyecon_app/model/currency_model.dart';
 import 'package:eyecon_app/model/dis_like_model.dart';
+import 'package:eyecon_app/model/edit_address_model.dart';
 import 'package:eyecon_app/model/faq_model.dart';
 import 'package:eyecon_app/model/favorite_products_model.dart';
 import 'package:eyecon_app/model/home_model.dart';
@@ -540,7 +543,7 @@ print(response.data);
 
 
       addressModel =
-          AddressModel.fromJson(Map<String, dynamic>.from(response.data));
+          AddressModel.fromJson(json.decode(response.data));
     }
 
     return addressModel;
@@ -573,6 +576,93 @@ print(response.data);
     }
 
     return addressModel;
+
+
+  }
+  Future<AddAddressModel> addAddress( Map map)async{
+
+
+
+    String body = json.encode(map);
+
+    AddAddressModel addressModel;
+
+    var dio = Dio();
+
+
+    var response = await dio.post(TAG_BASE_URL + "addshippingaddress",
+        options: Options(contentType: 'application/json'),
+        data: body);
+
+    if (response.statusCode == 200) {
+      print(response.data);
+
+
+
+
+      addressModel =  AddAddressModel.fromJson(json.decode(response.data));
+
+    }
+
+    return addressModel;
+
+
+  }
+  Future<EditAddressModel> editAddress( Map map)async{
+
+
+
+    String body = json.encode(map);
+
+    EditAddressModel editAddressModel;
+
+    var dio = Dio();
+
+
+    var response = await dio.post(TAG_BASE_URL + "updateshippingaddress",
+        options: Options(contentType: 'application/json'),
+        data: body);
+
+    if (response.statusCode == 200) {
+      print(response.data);
+
+
+
+
+      editAddressModel =  EditAddressModel.fromJson(json.decode(response.data));
+
+    }
+
+    return editAddressModel;
+
+
+  }
+  Future<CityModel> city( Map map)async{
+
+
+
+    String body = json.encode(map);
+
+    CityModel cityModel;
+
+    var dio = Dio();
+
+
+    var response = await dio.post(TAG_BASE_URL + "getcities",
+        options: Options(contentType: 'application/json'),
+        data: body);
+
+    if (response.statusCode == 200) {
+      print(response.data);
+
+
+
+
+      cityModel =  CityModel.fromJson(json.decode(response.data));
+
+    }
+
+    return cityModel;
 
 
   }

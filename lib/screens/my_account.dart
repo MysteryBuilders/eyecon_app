@@ -226,7 +226,7 @@ class _MyAccountScreenState extends State<MyAccountScreen> {
                         ),
                         onTap: (){
                           Navigator.of(context,rootNavigator: true).push(new MaterialPageRoute(builder: (BuildContext context){
-                            return new AddressScreen();
+                            return new AddressScreen(isMyProfile: true,);
                           }));
                         },
                         leading: SizedBox(
