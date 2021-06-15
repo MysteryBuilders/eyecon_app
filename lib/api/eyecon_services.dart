@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:eyecon_app/localization/localization_methods.dart';
 import 'package:eyecon_app/model/add_address_model.dart';
+import 'package:eyecon_app/model/add_cart_model.dart';
 import 'package:eyecon_app/model/address_model.dart';
 import 'package:eyecon_app/model/categories_model.dart';
 import 'package:eyecon_app/model/change_password_model.dart';
@@ -663,6 +664,35 @@ print(response.data);
     }
 
     return cityModel;
+
+
+  }
+  Future<AddCartModel> addCart( Map map)async{
+
+
+
+    String body = json.encode(map);
+
+    AddCartModel addCartModel;
+
+    var dio = Dio();
+
+
+    var response = await dio.post(TAG_BASE_URL + "cart/add",
+        options: Options(contentType: 'application/json'),
+        data: body);
+
+    if (response.statusCode == 200) {
+      print(response.data);
+
+
+
+
+      addCartModel =  AddCartModel.fromJson(json.decode(response.data));
+
+    }
+
+    return addCartModel;
 
 
   }

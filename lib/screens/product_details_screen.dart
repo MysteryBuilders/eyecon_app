@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:eyecon_app/api/eyecon_services.dart';
+import 'package:eyecon_app/model/attribute_model.dart';
 import 'package:eyecon_app/model/dis_like_model.dart';
 import 'package:eyecon_app/model/like_model.dart';
 import 'package:eyecon_app/model/login_model.dart';
@@ -33,6 +34,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   final CarouselController _controller = CarouselController();
   int _current =0;
   int count = 1;
+   int productInStock = 0;
+   int minimumOrder =0;
   ProductDetailsModel productDetailsModel;
   Future<ProductDetailsModel> productDetails(String id) async{
 
@@ -42,6 +45,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     return productDetailsModel;
   }
   List<Map> selectedItems = List();
+  List<Attribute> attribueList = List();
   int isLiked = 0;
   GlobalKey<FormState> _globalKey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
@@ -53,8 +57,13 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     productDetails(widget.productId).then((value) {
       productDetailsModel = value;
       isLiked = productDetailsModel.productData[0].productsLiked;
+      productInStock =productDetailsModel.productData[0].productsMaxStock ;
+      minimumOrder = productDetailsModel.productData[0].productsMinOrder;
+      count = minimumOrder;
       List<Attributes> attributes = productDetailsModel.productData[0].attributes;
       for(int i =0;i<attributes.length;i++ ){
+        Attribute attribute = Attribute(attributes[i].option, attributes[i].values[0]);
+        attribueList.add(attribute);
         String optionId = attributes[i].option.id.toString();
         Map selectedMap = Map();
         selectedMap['optionId'] = optionId;
@@ -413,13 +422,15 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                 String optionId = productDetailsModel.productData[0].attributes[index].option.id.toString();
                                 String valueId =productDetailsModel.productData[0].attributes[index].values[i].id.toString();
                                 if(!isValueSelected(productDetailsModel.productData[0].attributes[index].option.id.toString(), productDetailsModel.productData[0].attributes[index].values[i].id.toString())){
-                                  for(int i =0;i<selectedItems.length;i++){
-                                    if(selectedItems[i]['optionId']==optionId){
-                                      selectedItems[i]['valueId']=valueId;
+                                  for(int j =0;j<attribueList.length;j++){
+                                    print("positions -->"+attribueList[i].option.id.toString());
+                                    print("selected position -->"+optionId);
+                                    if(attribueList[j].option.id.toString()==optionId){
+                                      attribueList[j].values=productDetailsModel.productData[0].attributes[index].values[i];
                                     }
 
                                   }
-                                  print(selectedItems);
+                                  print(attribueList);
                                   setState(() {
 
                                   });
@@ -466,7 +477,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                 children: [
                   GestureDetector(
                     onTap: (){
-                      if(count>1){
+                      if(count>minimumOrder){
                         count--;
                         setState(() {
 
@@ -491,7 +502,10 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                   ),
                   GestureDetector(
                     onTap: (){
-                      count++;
+                      if(productInStock>count){
+                        count++;
+                      }
+
                       setState(() {
 
                       });
@@ -517,10 +531,10 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
 
   bool isValueSelected(String optionId,String valueId){
     bool isSelected = false;
-    for(int i =0;i<selectedItems.length;i++){
-      String selectedOptionId = selectedItems[i]['optionId'];
+    for(int i =0;i<attribueList.length;i++){
+      String selectedOptionId = attribueList[i].option.id.toString();
       if(selectedOptionId == optionId){
-        String selectedValue = selectedItems[i]['valueId'];
+        String selectedValue = attribueList[i].values.id.toString();
         if(selectedValue == valueId){
           isSelected = true;
           break;
@@ -546,6 +560,9 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     return TextButton(
       style: flatButtonStyle,
       onPressed: () {
+        if(productInStock>0){
+
+        }
 
 
       },
