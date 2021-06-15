@@ -9,6 +9,8 @@ import 'package:eyecon_app/model/login_model.dart';
 import 'package:eyecon_app/model/product_details_model.dart';
 import 'package:eyecon_app/providers/model_hud.dart';
 import 'package:eyecon_app/screens/login_screen.dart';
+import 'package:eyecon_app/screens/photo_screen.dart';
+import 'package:eyecon_app/screens/vedio_screen.dart';
 import 'package:eyecon_app/utilities/constants.dart';
 import 'package:eyecon_app/widgets/action_icon.dart';
 import 'package:flutter/material.dart';
@@ -181,7 +183,11 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                   onTap: (){
                                     String url = item.image.trim();
                                     if(url.isNotEmpty) {
-
+                                      Navigator.of(context,rootNavigator: true).push(new MaterialPageRoute(builder: (BuildContext context){
+                                        return new PhotoScreen(imageProvider: NetworkImage(
+                                          TAG_IMAGE_URL+url,
+                                        ),);
+                                      }));
 
                                     }
 
@@ -310,9 +316,20 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
 
                         Opacity(
                           opacity: productDetailsModel.productData[0].productsVideoLink == null?0.0:1.0,
-                          child: Container(child: Image.asset('assets/images/vedio_icon.png',width: 25.w,height: 25.w,),
-                            padding: EdgeInsets.all(5.w),
-                          ),
+                          child:
+
+
+                          GestureDetector(
+                            onTap: (){
+                              Navigator.of(context,rootNavigator: true).push(new MaterialPageRoute(builder: (BuildContext context){
+                                  return new VideoScreen(vedioUrl:productDetailsModel.productData[0].productsVideoLink,auctionName: productDetailsModel.productData[0].productsName);
+                              }));
+                                   },
+                            child: Container(child: Image.asset('assets/images/vedio_icon.png',width: 25.w,height: 25.w,),
+                              padding: EdgeInsets.all(5.w),
+                            ),
+                          )
+
                         ),
 
                         GestureDetector(

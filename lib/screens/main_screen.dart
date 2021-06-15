@@ -6,7 +6,9 @@ import 'package:eyecon_app/screens/categories_screen.dart';
 import 'package:eyecon_app/screens/login_screen.dart';
 import 'package:eyecon_app/screens/my_account.dart';
 import 'package:eyecon_app/screens/notification_screen.dart';
+import 'package:eyecon_app/screens/product_details_screen.dart';
 import 'package:eyecon_app/screens/settings_screen.dart';
+import 'package:eyecon_app/screens/webview_screen.dart';
 import 'package:eyecon_app/screens/wishlist-screen.dart';
 import 'package:eyecon_app/utilities/constants.dart';
 import 'package:eyecon_app/widgets/action_icon.dart';
@@ -237,64 +239,79 @@ class _MainScreenState extends State<MainScreen> {
           color: Color(0xFFFFFFFF),
           child: ListView(
             children: [
-              Container(
-                width: width,
-
-                child:
-                CachedNetworkImage(
+              GestureDetector(
+                onTap: (){
+                  String url = homeModel.result.homeTopBanner[0].bannersUrl;
+                  if(url != '#'){
+                    Navigator.of(context,rootNavigator: true).push(new MaterialPageRoute(builder: (BuildContext context){
+                      return new WebViewScreen(url:homeModel.result.homeTopBanner[0].bannersUrl.toString(),
+                      title:homeModel.result.homeTopBanner[0].bannersTitle.toString() ,);
+                    }));
+                  }else{
+                    Navigator.of(context,rootNavigator: true).push(new MaterialPageRoute(builder: (BuildContext context){
+                      return new ProductDetailsScreen(productId:homeModel.result.homeTopBanner[0].id.toString());
+                    }));
+                  }
+                },
+                child: Container(
                   width: width,
-                  height: 180.h,
 
-                  fit: BoxFit.fill,
-                  imageUrl:'${TAG_IMAGE_URL}${homeModel.result.homeTopBanner[0].path}',
-                  imageBuilder: (context, imageProvider) => Container(
-                      width: width,
+                  child:
+                  CachedNetworkImage(
+                    width: width,
+                    height: 180.h,
 
-
-                      decoration: BoxDecoration(
-
-
-
-                        image: DecorationImage(
+                    fit: BoxFit.fill,
+                    imageUrl:'${TAG_IMAGE_URL}${homeModel.result.homeTopBanner[0].path}',
+                    imageBuilder: (context, imageProvider) => Container(
+                        width: width,
 
 
-                            fit: BoxFit.fill,
-                            image: imageProvider),
-                      )
-                  ),
-                  placeholder: (context, url) =>
-                      Column(
-                        children: [
-                          Expanded(
-                            flex: 9,
-                            child: Container(
-                              height: height,
-                              width: width,
+                        decoration: BoxDecoration(
 
 
-                              alignment: FractionalOffset.center,
-                              child: SizedBox(
-                                  height: 50.h,
-                                  width: 50.h,
-                                  child: new CircularProgressIndicator()),
+
+                          image: DecorationImage(
+
+
+                              fit: BoxFit.fill,
+                              image: imageProvider),
+                        )
+                    ),
+                    placeholder: (context, url) =>
+                        Column(
+                          children: [
+                            Expanded(
+                              flex: 9,
+                              child: Container(
+                                height: height,
+                                width: width,
+
+
+                                alignment: FractionalOffset.center,
+                                child: SizedBox(
+                                    height: 50.h,
+                                    width: 50.h,
+                                    child: new CircularProgressIndicator()),
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
+                          ],
+                        ),
 
 
-                  errorWidget: (context, url, error) => Container(
-                      height: height,
-                      width: width,
-                      alignment: FractionalOffset.center,
-                      child: Icon(Icons.image_not_supported)),
+                    errorWidget: (context, url, error) => Container(
+                        height: height,
+                        width: width,
+                        alignment: FractionalOffset.center,
+                        child: Icon(Icons.image_not_supported)),
 
+                  ),
+                  // Image.network(
+                  //
+                  //
+                  // '${kBaseUrl}${mAdsPhoto}${item.photo}'  , fit: BoxFit.fitWidth,
+                  //   height: 600.h,),
                 ),
-                // Image.network(
-                //
-                //
-                // '${kBaseUrl}${mAdsPhoto}${item.photo}'  , fit: BoxFit.fitWidth,
-                //   height: 600.h,),
               ),
               Container(margin: EdgeInsets.symmetric(vertical: 10.h),
               child: Column(
@@ -319,110 +336,121 @@ class _MainScreenState extends State<MainScreen> {
                 child: ListView.separated(
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (context,index){
-                  return Container(
-                    margin: EdgeInsetsDirectional.only(start: 10.w),
-                    width: 160.w,
-                    child: Column(
-                      children: [
-                        Expanded(child:    CachedNetworkImage(
-                          width: width,
+                  return
+                    GestureDetector(
+                      onTap: (){
 
 
-                          fit: BoxFit.fill,
-                          imageUrl:'${TAG_IMAGE_URL}${homeModel.result.newInProduct[index].imagePath}',
-                          imageBuilder: (context, imageProvider) => Container(
-                              width: width,
+                        Navigator.of(context,rootNavigator: true).push(new MaterialPageRoute(builder: (BuildContext context){
+                          return new ProductDetailsScreen(productId:homeModel.result.newInProduct[index].id.toString());
+                        }));
+
+                      },
+                      child: Container(
+                      margin: EdgeInsetsDirectional.only(start: 10.w),
+                      width: 160.w,
+                      child: Column(
+                        children: [
+                          Expanded(child:    CachedNetworkImage(
+                            width: width,
 
 
-                              decoration: BoxDecoration(
+                            fit: BoxFit.fill,
+                            imageUrl:'${TAG_IMAGE_URL}${homeModel.result.newInProduct[index].imagePath}',
+                            imageBuilder: (context, imageProvider) => Container(
+                                width: width,
+
+
+                                decoration: BoxDecoration(
 
 
 
-                                image: DecorationImage(
+                                  image: DecorationImage(
 
 
-                                    fit: BoxFit.fill,
-                                    image: imageProvider),
-                              )
+                                      fit: BoxFit.fill,
+                                      image: imageProvider),
+                                )
+                            ),
+                            placeholder: (context, url) =>
+                                Column(
+                                  children: [
+                                    Expanded(
+                                      flex: 9,
+                                      child: Container(
+                                        height: height,
+                                        width: width,
+
+
+                                        alignment: FractionalOffset.center,
+                                        child: SizedBox(
+                                            height: 50.h,
+                                            width: 50.h,
+                                            child: new CircularProgressIndicator()),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+
+
+                            errorWidget: (context, url, error) => Container(
+                                height: height,
+                                width: width,
+                                alignment: FractionalOffset.center,
+                                child: Icon(Icons.image_not_supported)),
+
                           ),
-                          placeholder: (context, url) =>
-                              Column(
-                                children: [
-                                  Expanded(
-                                    flex: 9,
-                                    child: Container(
-                                      height: height,
-                                      width: width,
+                          flex: 3,),
+                          Expanded(flex:1,child: Container(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
 
+                              children: [
+                                Expanded(flex:2,child: Container(
+                                  alignment: AlignmentDirectional.centerStart,
+                                  child: Text(
 
-                                      alignment: FractionalOffset.center,
-                                      child: SizedBox(
-                                          height: 50.h,
-                                          width: 50.h,
-                                          child: new CircularProgressIndicator()),
+                                      homeModel.result.newInProduct[index].productsName,
+                                    textAlign: TextAlign.start,
+                                    style: TextStyle(
+                                      color: Color(0xFF000000),
+                                      fontSize: screenUtil.setSp(8),
+                                      fontWeight: FontWeight.w600
                                     ),
                                   ),
-                                ],
-                              ),
+                                )),
+                                Expanded(flex:1,child: Text(
 
-
-                          errorWidget: (context, url, error) => Container(
-                              height: height,
-                              width: width,
-                              alignment: FractionalOffset.center,
-                              child: Icon(Icons.image_not_supported)),
-
-                        ),
-                        flex: 3,),
-                        Expanded(flex:1,child: Container(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.start,
-
-                            children: [
-                              Expanded(flex:2,child: Container(
-                                alignment: AlignmentDirectional.centerStart,
-                                child: Text(
-
-                                    homeModel.result.newInProduct[index].productsName,
+                                  homeModel.result.newInProduct[index].productsPrice+" KWD",
                                   textAlign: TextAlign.start,
                                   style: TextStyle(
-                                    color: Color(0xFF000000),
-                                    fontSize: screenUtil.setSp(8),
-                                    fontWeight: FontWeight.w600
+                        decoration: TextDecoration.lineThrough,
+                                      color: Color(0xFFEFA18B),
+                                      fontSize: screenUtil.setSp(7),
+                                      fontWeight: FontWeight.w600
                                   ),
-                                ),
-                              )),
-                              Expanded(flex:1,child: Text(
+                                )),
+                                Expanded(flex:1,child: Text(
 
-                                homeModel.result.newInProduct[index].productsPrice+" KWD",
-                                textAlign: TextAlign.start,
-                                style: TextStyle(
-                      decoration: TextDecoration.lineThrough,
-                                    color: Color(0xFFEFA18B),
-                                    fontSize: screenUtil.setSp(7),
-                                    fontWeight: FontWeight.w600
-                                ),
-                              )),
-                              Expanded(flex:1,child: Text(
+                                  homeModel.result.newInProduct[index].productsPrice+" KWD",
+                                  textAlign: TextAlign.start,
+                                  style: TextStyle(
 
-                                homeModel.result.newInProduct[index].productsPrice+" KWD",
-                                textAlign: TextAlign.start,
-                                style: TextStyle(
+                                      color: Color(0xFF000000),
+                                      fontSize: screenUtil.setSp(10),
+                                      fontWeight: FontWeight.bold
+                                  ),
+                                ))
+                              ],
+                            ),
 
-                                    color: Color(0xFF000000),
-                                    fontSize: screenUtil.setSp(10),
-                                    fontWeight: FontWeight.bold
-                                ),
-                              ))
-                            ],
-                          ),
+                          ))
+                        ],
+                      ),
 
-                        ))
-                      ],
-                    ),
-
-                  );
+                  ),
+                    );
                 }, separatorBuilder: (context,index){
                   return Container(width: 15.h,
                     color: Color(0xFFFFFFFF),);
@@ -432,64 +460,79 @@ class _MainScreenState extends State<MainScreen> {
               ),
                 child: shopButton('Shop Now', context),
               ),
-              Container(
-                width: width,
-
-                child:
-                CachedNetworkImage(
+              GestureDetector(
+                onTap: (){
+                  String url = homeModel.result.homeMiddleBanner[0].bannersUrl;
+                  if(url != "#"){
+                    Navigator.of(context,rootNavigator: true).push(new MaterialPageRoute(builder: (BuildContext context){
+                      return new WebViewScreen(url:homeModel.result.homeTopBanner[0].bannersUrl.toString(),
+                        title:homeModel.result.homeMiddleBanner[0].bannersTitle.toString() ,);
+                    }));
+                  }else{
+                    Navigator.of(context,rootNavigator: true).push(new MaterialPageRoute(builder: (BuildContext context){
+                      return new ProductDetailsScreen(productId:homeModel.result.homeMiddleBanner[0].id.toString());
+                    }));
+                  }
+                },
+                child: Container(
                   width: width,
-                  height: 180.h,
 
-                  fit: BoxFit.fill,
-                  imageUrl:'${TAG_IMAGE_URL}${homeModel.result.homeMiddleBanner[0].path}',
-                  imageBuilder: (context, imageProvider) => Container(
-                      width: width,
+                  child:
+                  CachedNetworkImage(
+                    width: width,
+                    height: 180.h,
 
-
-                      decoration: BoxDecoration(
-
-
-
-                        image: DecorationImage(
+                    fit: BoxFit.fill,
+                    imageUrl:'${TAG_IMAGE_URL}${homeModel.result.homeMiddleBanner[0].path}',
+                    imageBuilder: (context, imageProvider) => Container(
+                        width: width,
 
 
-                            fit: BoxFit.fill,
-                            image: imageProvider),
-                      )
-                  ),
-                  placeholder: (context, url) =>
-                      Column(
-                        children: [
-                          Expanded(
-                            flex: 9,
-                            child: Container(
-                              height: height,
-                              width: width,
+                        decoration: BoxDecoration(
 
 
-                              alignment: FractionalOffset.center,
-                              child: SizedBox(
-                                  height: 50.h,
-                                  width: 50.h,
-                                  child: new CircularProgressIndicator()),
+
+                          image: DecorationImage(
+
+
+                              fit: BoxFit.fill,
+                              image: imageProvider),
+                        )
+                    ),
+                    placeholder: (context, url) =>
+                        Column(
+                          children: [
+                            Expanded(
+                              flex: 9,
+                              child: Container(
+                                height: height,
+                                width: width,
+
+
+                                alignment: FractionalOffset.center,
+                                child: SizedBox(
+                                    height: 50.h,
+                                    width: 50.h,
+                                    child: new CircularProgressIndicator()),
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
+                          ],
+                        ),
 
 
-                  errorWidget: (context, url, error) => Container(
-                      height: height,
-                      width: width,
-                      alignment: FractionalOffset.center,
-                      child: Icon(Icons.image_not_supported)),
+                    errorWidget: (context, url, error) => Container(
+                        height: height,
+                        width: width,
+                        alignment: FractionalOffset.center,
+                        child: Icon(Icons.image_not_supported)),
 
+                  ),
+                  // Image.network(
+                  //
+                  //
+                  // '${kBaseUrl}${mAdsPhoto}${item.photo}'  , fit: BoxFit.fitWidth,
+                  //   height: 600.h,),
                 ),
-                // Image.network(
-                //
-                //
-                // '${kBaseUrl}${mAdsPhoto}${item.photo}'  , fit: BoxFit.fitWidth,
-                //   height: 600.h,),
               ),
               Container(
                 height: 230.h,
@@ -533,10 +576,16 @@ class _MainScreenState extends State<MainScreen> {
                               children: [
                                 GestureDetector(
                                   onTap: (){
-                                    String url = item.path.trim();
-                                    if(url.isNotEmpty) {
-
-
+                                    String url = item.bannersUrl;
+                                    if(url != '#'){
+                                      Navigator.of(context,rootNavigator: true).push(new MaterialPageRoute(builder: (BuildContext context){
+                                        return new WebViewScreen(url:item.bannersUrl.toString(),
+                                          title:item.bannersTitle.toString() ,);
+                                      }));
+                                    }else{
+                                      Navigator.of(context,rootNavigator: true).push(new MaterialPageRoute(builder: (BuildContext context){
+                                        return new ProductDetailsScreen(productId:item.id.toString());
+                                      }));
                                     }
 
                                   },
@@ -666,111 +715,118 @@ class _MainScreenState extends State<MainScreen> {
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (context,index){
                       return
-                        Container(
-                        margin: EdgeInsetsDirectional.only(start: 10.w),
-                        width: 160.w,
-                        child: Column(
-                          children: [
-                            Expanded(child:
-                            CachedNetworkImage(
-                              width: width,
+                        GestureDetector(
+                          onTap: (){
+                            Navigator.of(context,rootNavigator: true).push(new MaterialPageRoute(builder: (BuildContext context){
+                              return new ProductDetailsScreen(productId:homeModel.result.pickedForYou[index].id.toString());
+                            }));
+                          },
+                          child: Container(
+                          margin: EdgeInsetsDirectional.only(start: 10.w),
+                          width: 160.w,
+                          child: Column(
+                            children: [
+                              Expanded(child:
+                              CachedNetworkImage(
+                                width: width,
 
 
-                              fit: BoxFit.fill,
-                              imageUrl:'${TAG_IMAGE_URL}${homeModel.result.pickedForYou[index].imagePath}',
-                              imageBuilder: (context, imageProvider) => Container(
-                                  width: width,
+                                fit: BoxFit.fill,
+                                imageUrl:'${TAG_IMAGE_URL}${homeModel.result.pickedForYou[index].imagePath}',
+                                imageBuilder: (context, imageProvider) => Container(
+                                    width: width,
 
 
-                                  decoration: BoxDecoration(
+                                    decoration: BoxDecoration(
 
 
 
-                                    image: DecorationImage(
+                                      image: DecorationImage(
 
 
-                                        fit: BoxFit.fill,
-                                        image: imageProvider),
-                                  )
+                                          fit: BoxFit.fill,
+                                          image: imageProvider),
+                                    )
+                                ),
+                                placeholder: (context, url) =>
+                                    Column(
+                                      children: [
+                                        Expanded(
+                                          flex: 9,
+                                          child: Container(
+                                            height: height,
+                                            width: width,
+
+
+                                            alignment: FractionalOffset.center,
+                                            child: SizedBox(
+                                                height: 50.h,
+                                                width: 50.h,
+                                                child: new CircularProgressIndicator()),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+
+
+                                errorWidget: (context, url, error) => Container(
+                                    height: height,
+                                    width: width,
+                                    alignment: FractionalOffset.center,
+                                    child: Icon(Icons.image_not_supported)),
+
                               ),
-                              placeholder: (context, url) =>
-                                  Column(
-                                    children: [
-                                      Expanded(
-                                        flex: 9,
-                                        child: Container(
-                                          height: height,
-                                          width: width,
+                                flex: 3,),
+                              Expanded(flex:1,child: Container(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.start,
 
+                                  children: [
+                                    Expanded(flex:2,child: Container(
+                                      alignment: AlignmentDirectional.centerStart,
+                                      child: Text(
 
-                                          alignment: FractionalOffset.center,
-                                          child: SizedBox(
-                                              height: 50.h,
-                                              width: 50.h,
-                                              child: new CircularProgressIndicator()),
+                                        homeModel.result.pickedForYou[index].productsName,
+                                        textAlign: TextAlign.start,
+                                        style: TextStyle(
+                                            color: Color(0xFF000000),
+                                            fontSize: screenUtil.setSp(8),
+                                            fontWeight: FontWeight.w600
                                         ),
                                       ),
-                                    ],
-                                  ),
+                                    )),
+                                    Expanded(flex:1,child: Text(
 
-
-                              errorWidget: (context, url, error) => Container(
-                                  height: height,
-                                  width: width,
-                                  alignment: FractionalOffset.center,
-                                  child: Icon(Icons.image_not_supported)),
-
-                            ),
-                              flex: 3,),
-                            Expanded(flex:1,child: Container(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-
-                                children: [
-                                  Expanded(flex:2,child: Container(
-                                    alignment: AlignmentDirectional.centerStart,
-                                    child: Text(
-
-                                      homeModel.result.pickedForYou[index].productsName,
+                                      homeModel.result.pickedForYou[index].productsPrice+" KWD",
                                       textAlign: TextAlign.start,
                                       style: TextStyle(
-                                          color: Color(0xFF000000),
-                                          fontSize: screenUtil.setSp(8),
+                                          decoration: TextDecoration.lineThrough,
+                                          color: Color(0xFFEFA18B),
+                                          fontSize: screenUtil.setSp(7),
                                           fontWeight: FontWeight.w600
                                       ),
-                                    ),
-                                  )),
-                                  Expanded(flex:1,child: Text(
+                                    )),
+                                    Expanded(flex:1,child: Text(
 
-                                    homeModel.result.pickedForYou[index].productsPrice+" KWD",
-                                    textAlign: TextAlign.start,
-                                    style: TextStyle(
-                                        decoration: TextDecoration.lineThrough,
-                                        color: Color(0xFFEFA18B),
-                                        fontSize: screenUtil.setSp(7),
-                                        fontWeight: FontWeight.w600
-                                    ),
-                                  )),
-                                  Expanded(flex:1,child: Text(
+                                      homeModel.result.pickedForYou[index].productsPrice+" KWD",
+                                      textAlign: TextAlign.start,
+                                      style: TextStyle(
 
-                                    homeModel.result.pickedForYou[index].productsPrice+" KWD",
-                                    textAlign: TextAlign.start,
-                                    style: TextStyle(
+                                          color: Color(0xFF000000),
+                                          fontSize: screenUtil.setSp(10),
+                                          fontWeight: FontWeight.bold
+                                      ),
+                                    ))
+                                  ],
+                                ),
 
-                                        color: Color(0xFF000000),
-                                        fontSize: screenUtil.setSp(10),
-                                        fontWeight: FontWeight.bold
-                                    ),
-                                  ))
-                                ],
-                              ),
+                              ))
+                            ],
+                          ),
 
-                            ))
-                          ],
-                        ),
-
-                      );
+                      ),
+                        );
                     }, separatorBuilder: (context,index){
                   return Container(width: 15.h,
                     color: Color(0xFFFFFFFF),);

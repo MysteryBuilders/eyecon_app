@@ -1,7 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:eyecon_app/api/eyecon_services.dart';
 import 'package:eyecon_app/model/categories_model.dart';
+import 'package:eyecon_app/screens/product_details_screen.dart';
 import 'package:eyecon_app/screens/products_screen.dart';
+import 'package:eyecon_app/screens/webview_screen.dart';
 import 'package:eyecon_app/utilities/constants.dart';
 import 'package:eyecon_app/widgets/action_icon.dart';
 import 'package:flutter/material.dart';
@@ -120,75 +122,91 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
               height: 20.h,
 
             ),
-            Container(
-              width: width,
-              height: 125.h,
-              decoration: BoxDecoration(
-                color: Color(0xFFE4937C),
-                borderRadius: BorderRadius.all(Radius.circular(5.w))
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Text(categoriesModel.categoryBanner[0].bannersTitle,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        color: Color(0xFF063B36),
-                        fontWeight: FontWeight.w500,
 
-                        fontSize: screenUtil.setSp(17)
-                    ),),
-                  CachedNetworkImage(
-                    width: 125.w,
-                    height: 90.h,
+            GestureDetector(
+              onTap: (){
+                String url = categoriesModel.categoryBanner[0].bannersUrl;
+                if(url != ''){
+                  Navigator.of(context,rootNavigator: true).push(new MaterialPageRoute(builder: (BuildContext context){
+                    return new WebViewScreen(url:categoriesModel.categoryBanner[0].bannersUrl.toString(),
+                      title:categoriesModel.categoryBanner[0].bannersTitle.toString() ,);
+                  }));
+                }else{
+                  Navigator.of(context,rootNavigator: true).push(new MaterialPageRoute(builder: (BuildContext context){
+                    return new ProductDetailsScreen(productId:categoriesModel.categoryBanner[0].id.toString());
+                  }));
+                }
+              },
+              child: Container(
+                width: width,
+                height: 125.h,
+                decoration: BoxDecoration(
+                  color: Color(0xFFE4937C),
+                  borderRadius: BorderRadius.all(Radius.circular(5.w))
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Text(categoriesModel.categoryBanner[0].bannersTitle,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: Color(0xFF063B36),
+                          fontWeight: FontWeight.w500,
 
-
-                    fit: BoxFit.fill,
-                    imageUrl:'${TAG_IMAGE_URL}${categoriesModel.categoryBanner[0].path}',
-                    imageBuilder: (context, imageProvider) => Container(
-                        width: width,
-
-
-                        decoration: BoxDecoration(
-
-
-
-                          image: DecorationImage(
-
-
-                              fit: BoxFit.fill,
-                              image: imageProvider),
-                        )
-                    ),
-                    placeholder: (context, url) =>
-                        Column(
-                          children: [
-                            Expanded(
-                              flex: 9,
-                              child: Container(
-                                height: height,
-                                width: width,
+                          fontSize: screenUtil.setSp(17)
+                      ),),
+                    CachedNetworkImage(
+                      width: 125.w,
+                      height: 90.h,
 
 
-                                alignment: FractionalOffset.center,
-                                child: SizedBox(
-                                    height: 50.h,
-                                    width: 50.h,
-                                    child: new CircularProgressIndicator()),
+                      fit: BoxFit.fill,
+                      imageUrl:'${TAG_IMAGE_URL}${categoriesModel.categoryBanner[0].path}',
+                      imageBuilder: (context, imageProvider) => Container(
+                          width: width,
+
+
+                          decoration: BoxDecoration(
+
+
+
+                            image: DecorationImage(
+
+
+                                fit: BoxFit.fill,
+                                image: imageProvider),
+                          )
+                      ),
+                      placeholder: (context, url) =>
+                          Column(
+                            children: [
+                              Expanded(
+                                flex: 9,
+                                child: Container(
+                                  height: height,
+                                  width: width,
+
+
+                                  alignment: FractionalOffset.center,
+                                  child: SizedBox(
+                                      height: 50.h,
+                                      width: 50.h,
+                                      child: new CircularProgressIndicator()),
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
+                            ],
+                          ),
 
 
-                    errorWidget: (context, url, error) => Container(
-                        height: height,
-                        width: width,
-                        alignment: FractionalOffset.center,
-                        child: Icon(Icons.image_not_supported)),
+                      errorWidget: (context, url, error) => Container(
+                          height: height,
+                          width: width,
+                          alignment: FractionalOffset.center,
+                          child: Icon(Icons.image_not_supported)),
 
-                  )
-                ],
+                    )
+                  ],
+                ),
               ),
             ),
             Container(height: 10.h,),
