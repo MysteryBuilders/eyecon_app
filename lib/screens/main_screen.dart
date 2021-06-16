@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:eyecon_app/api/eyecon_services.dart';
 import 'package:eyecon_app/model/home_model.dart';
+import 'package:eyecon_app/screens/cart_screen.dart';
 import 'package:eyecon_app/screens/categories_screen.dart';
 import 'package:eyecon_app/screens/login_screen.dart';
 import 'package:eyecon_app/screens/my_account.dart';
@@ -78,12 +79,19 @@ class _MainScreenState extends State<MainScreen> {
 
         actions: [
 
-        NamedIcon(
+        GestureDetector(
+          onTap: (){
+            Navigator.of(context,rootNavigator: true).push(new MaterialPageRoute(builder: (BuildContext context){
+              return new CartScreen();
+            }));
+          },
+          child: NamedIcon(
 
-        iconData: Icons.notifications,
+          iconData: Icons.notifications,
 
 
-        notificationCount:  2,),
+          notificationCount:  2,),
+        ),
           SizedBox(width: 5.w,),
 
 
@@ -242,7 +250,7 @@ class _MainScreenState extends State<MainScreen> {
               GestureDetector(
                 onTap: (){
                   String url = homeModel.result.homeTopBanner[0].bannersUrl;
-                  if(url != '#'){
+                  if(url != '#'||url.trim().isNotEmpty){
                     Navigator.of(context,rootNavigator: true).push(new MaterialPageRoute(builder: (BuildContext context){
                       return new WebViewScreen(url:homeModel.result.homeTopBanner[0].bannersUrl.toString(),
                       title:homeModel.result.homeTopBanner[0].bannersTitle.toString() ,);
@@ -463,7 +471,7 @@ class _MainScreenState extends State<MainScreen> {
               GestureDetector(
                 onTap: (){
                   String url = homeModel.result.homeMiddleBanner[0].bannersUrl;
-                  if(url != "#"){
+                  if(url != "#"||url.trim().isNotEmpty){
                     Navigator.of(context,rootNavigator: true).push(new MaterialPageRoute(builder: (BuildContext context){
                       return new WebViewScreen(url:homeModel.result.homeTopBanner[0].bannersUrl.toString(),
                         title:homeModel.result.homeMiddleBanner[0].bannersTitle.toString() ,);
@@ -577,7 +585,7 @@ class _MainScreenState extends State<MainScreen> {
                                 GestureDetector(
                                   onTap: (){
                                     String url = item.bannersUrl;
-                                    if(url != '#'){
+                                    if(url != '#'||url.trim().isNotEmpty){
                                       Navigator.of(context,rootNavigator: true).push(new MaterialPageRoute(builder: (BuildContext context){
                                         return new WebViewScreen(url:item.bannersUrl.toString(),
                                           title:item.bannersTitle.toString() ,);

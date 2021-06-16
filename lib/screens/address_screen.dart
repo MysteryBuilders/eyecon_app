@@ -6,6 +6,7 @@ import 'package:eyecon_app/model/address_model.dart' as AddModel;
 import 'package:eyecon_app/model/login_model.dart';
 import 'package:eyecon_app/screens/add_address_screen.dart';
 import 'package:eyecon_app/screens/edit_address_screen.dart';
+import 'package:eyecon_app/screens/preview_cart_screen.dart';
 import 'package:eyecon_app/utilities/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -20,6 +21,7 @@ class AddressScreen extends StatefulWidget {
 
 class _AddressScreenState extends State<AddressScreen> {
   ScreenUtil screenUtil = ScreenUtil();
+  int selectedAddress =0;
   AddModel.AddressModel addressModel;
   List<bool> addresses = List();
   bool isAddressSelected(){
@@ -29,6 +31,7 @@ class _AddressScreenState extends State<AddressScreen> {
         bool isAddressSelected = addresses[i];
         if (isAddressSelected) {
           selected = true;
+          selectedAddress = i;
           break;
         }
       }
@@ -87,16 +90,23 @@ class _AddressScreenState extends State<AddressScreen> {
          child: isAddressSelected()?
          Center(
              child:
-             Padding(
-               padding:  EdgeInsets.all(8.0),
-               child: Text('Continue',
-                 textAlign: TextAlign.start,
-                 style: TextStyle(
-                     color: Color(0xFF000000),
-                     fontWeight: FontWeight.bold,
+             GestureDetector(
+               onTap: (){
+                 Navigator.of(context,rootNavigator: true).push(new MaterialPageRoute(builder: (BuildContext context){
+                   return new PreviewCartScreen(addressModel:addressModel.data[selectedAddress]);
+                 }));
+               },
+               child: Padding(
+                 padding:  EdgeInsets.all(8.0),
+                 child: Text('Continue',
+                   textAlign: TextAlign.start,
+                   style: TextStyle(
+                       color: Color(0xFF000000),
+                       fontWeight: FontWeight.bold,
 
-                     fontSize: screenUtil.setSp(17)
-                 ),),
+                       fontSize: screenUtil.setSp(17)
+                   ),),
+               ),
              ),
          ): Container()
 

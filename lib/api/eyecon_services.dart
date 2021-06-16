@@ -5,11 +5,14 @@ import 'package:eyecon_app/localization/localization_methods.dart';
 import 'package:eyecon_app/model/add_address_model.dart';
 import 'package:eyecon_app/model/add_cart_model.dart';
 import 'package:eyecon_app/model/address_model.dart';
+import 'package:eyecon_app/model/cart_model.dart';
 import 'package:eyecon_app/model/categories_model.dart';
 import 'package:eyecon_app/model/change_password_model.dart';
 import 'package:eyecon_app/model/city_model.dart';
 import 'package:eyecon_app/model/country_model.dart';
+import 'package:eyecon_app/model/coupon_model.dart';
 import 'package:eyecon_app/model/currency_model.dart';
+import 'package:eyecon_app/model/delete_cart_model.dart';
 import 'package:eyecon_app/model/dis_like_model.dart';
 import 'package:eyecon_app/model/edit_address_model.dart';
 import 'package:eyecon_app/model/faq_model.dart';
@@ -19,9 +22,12 @@ import 'package:eyecon_app/model/like_model.dart';
 import 'package:eyecon_app/model/login_model.dart';
 import 'package:eyecon_app/model/order_model.dart';
 import 'package:eyecon_app/model/page_model.dart';
+import 'package:eyecon_app/model/place_order_model.dart';
 import 'package:eyecon_app/model/product_details_model.dart';
 import 'package:eyecon_app/model/products_model.dart';
 import 'package:eyecon_app/model/register_model.dart';
+import 'package:eyecon_app/model/tax_model.dart';
+import 'package:eyecon_app/model/update_cart_model.dart';
 import 'package:eyecon_app/model/update_profile_model.dart';
 import 'package:eyecon_app/model/wallet_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -693,6 +699,186 @@ print(response.data);
     }
 
     return addCartModel;
+
+
+  }
+  Future<List<CartModel>> cart( Map map)async{
+
+
+
+    String body = json.encode(map);
+
+    List<CartModel> cartModel;
+
+    var dio = Dio();
+
+
+    var response = await dio.post(TAG_BASE_URL + "cart/index",
+        options: Options(contentType: 'application/json'),
+        data: body);
+
+    if (response.statusCode == 200) {
+      print(response.data);
+
+
+
+    cartModel =  (response.data as List)
+          .map((x) => CartModel.fromJson(x))
+          .toList();
+      // final parsed = jsonDecode(response.data).cast<Map<String, dynamic>>();
+
+
+
+      // cartModel =  CartModel.fromJson(json.decode(response.data)) as List<CartModel>;
+
+    }
+
+    return cartModel;
+
+
+  }
+  Future<UpdateCartModel> updateCart( Map map)async{
+
+
+
+    String body = json.encode(map);
+
+    UpdateCartModel addCartModel;
+
+    var dio = Dio();
+
+
+    var response = await dio.post(TAG_BASE_URL + "cart/update",
+        options: Options(contentType: 'application/json'),
+        data: body);
+
+    if (response.statusCode == 200) {
+      print(response.data);
+
+
+
+
+      addCartModel =   UpdateCartModel.fromJson(Map<String, dynamic>.from(response.data));
+
+    }
+
+    return addCartModel;
+
+
+  }
+  Future<DeleteCartModel> deleteCart( Map map)async{
+
+
+
+    String body = json.encode(map);
+
+    DeleteCartModel deleteCartModel;
+
+    var dio = Dio();
+
+
+    var response = await dio.post(TAG_BASE_URL + "cart/destroy",
+        options: Options(contentType: 'application/json'),
+        data: body);
+
+    if (response.statusCode == 200) {
+      print(response.data);
+
+
+
+
+      deleteCartModel =   DeleteCartModel.fromJson(Map<String, dynamic>.from(response.data));
+
+    }
+
+    return deleteCartModel;
+
+
+  }
+  Future<TaxModel> tax( Map map)async{
+
+
+
+    String body = json.encode(map);
+
+    TaxModel taxModel;
+
+    var dio = Dio();
+
+
+    var response = await dio.post(TAG_BASE_URL + "gettax",
+        options: Options(contentType: 'application/json'),
+        data: body);
+
+    if (response.statusCode == 200) {
+      print(response.data);
+
+
+
+
+      taxModel =      TaxModel.fromJson(json.decode(response.data));
+
+    }
+
+    return taxModel;
+
+
+  }
+  Future<CouponModel> applyCoupoun( Map map)async{
+
+
+
+    String body = json.encode(map);
+
+    CouponModel couponModel;
+
+    var dio = Dio();
+
+
+    var response = await dio.post(TAG_BASE_URL + "getcoupon",
+        options: Options(contentType: 'application/json'),
+        data: body);
+
+    if (response.statusCode == 200) {
+      print(response.data);
+
+
+
+
+      couponModel =    CouponModel.fromJson(Map<String, dynamic>.from(response.data));
+
+    }
+
+    return couponModel;
+
+
+  }
+  Future<PlaceOrderModel> placeOrder( Map map)async{
+
+
+
+    String body = json.encode(map);
+
+    PlaceOrderModel couponModel;
+
+    var dio = Dio();
+
+
+    var response = await dio.post(TAG_BASE_URL + "addtoorder",
+        options: Options(contentType: 'application/json'),
+        data: body);
+
+    if (response.statusCode == 200) {
+      print(response.data);
+
+
+
+
+      couponModel =   PlaceOrderModel.fromJson(json.decode(response.data));
+
+    }
+
+    return couponModel;
 
 
   }

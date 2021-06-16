@@ -560,9 +560,9 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     return TextButton(
       style: flatButtonStyle,
       onPressed: () {
-        if(productInStock>0){
+        validate(context);
 
-        }
+
 
 
       },
@@ -623,6 +623,37 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     }else{
       Navigator.pushReplacementNamed(context, LoginScreen.id);
     }
+
+  }
+
+  void validate(BuildContext context) async{
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    bool isLoggedIn = sharedPreferences.getBool(kIsLogin)??false;
+    if(isLoggedIn){
+      if(productInStock>0) {
+        String loginData = sharedPreferences.getString(kUserModel);
+        String currency = sharedPreferences.getString("currency")??"KWD";
+        final body = json.decode(loginData);
+        LoginModel loginModel = LoginModel.fromJson(body);
+        String userId = loginModel.data[0].id.toString();
+        String productId = productDetailsModel.productData[0].productsId
+            .toString();
+        String productType = productDetailsModel.productData[0].productsType.toString();
+
+        Map<String,dynamic> map = Map();
+        map['customer_id']= userId;
+        map['currency_code'] = currency;
+        map['quantity'] = count;
+        map['quantity'] = count;
+
+
+
+      }
+
+
+    }
+
+
 
   }
 }
