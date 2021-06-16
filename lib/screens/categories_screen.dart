@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:eyecon_app/api/eyecon_services.dart';
 import 'package:eyecon_app/model/categories_model.dart';
+import 'package:eyecon_app/providers/cart_notifier.dart';
 import 'package:eyecon_app/screens/product_details_screen.dart';
 import 'package:eyecon_app/screens/products_screen.dart';
 import 'package:eyecon_app/screens/webview_screen.dart';
@@ -8,6 +9,7 @@ import 'package:eyecon_app/utilities/constants.dart';
 import 'package:eyecon_app/widgets/action_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 class CategoriesScreen extends StatefulWidget {
   static String id = 'CategoriesScreen';
   const CategoriesScreen({Key key}) : super(key: key);
@@ -68,7 +70,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
               iconData: Icons.notifications,
 
 
-              notificationCount:  2,),
+              notificationCount:  Provider.of<CartNumber>(context,listen: false).number,),
             SizedBox(width: 5.w,),
 
 

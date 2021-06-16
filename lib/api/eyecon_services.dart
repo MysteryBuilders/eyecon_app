@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
@@ -18,6 +19,7 @@ import 'package:eyecon_app/model/edit_address_model.dart';
 import 'package:eyecon_app/model/faq_model.dart';
 import 'package:eyecon_app/model/favorite_products_model.dart';
 import 'package:eyecon_app/model/home_model.dart';
+import 'package:eyecon_app/model/inventory_model.dart';
 import 'package:eyecon_app/model/like_model.dart';
 import 'package:eyecon_app/model/login_model.dart';
 import 'package:eyecon_app/model/order_model.dart';
@@ -678,6 +680,7 @@ print(response.data);
 
 
     String body = json.encode(map);
+    print(map);
 
     AddCartModel addCartModel;
 
@@ -694,7 +697,7 @@ print(response.data);
 
 
 
-      addCartModel =  AddCartModel.fromJson(json.decode(response.data));
+      addCartModel =  AddCartModel.fromJson(Map<String, dynamic>.from(response.data));
 
     }
 
@@ -875,6 +878,36 @@ print(response.data);
 
 
       couponModel =   PlaceOrderModel.fromJson(json.decode(response.data));
+
+    }
+
+    return couponModel;
+
+
+  }
+  Future<InventoryModel> inventory( Map map)async{
+
+
+
+    String body = json.encode(map);
+
+    InventoryModel couponModel;
+
+    var dio = Dio();
+
+
+    var response = await dio.post(TAG_BASE_URL + "getinventriprice",
+        options: Options(contentType: 'application/json'),
+        data: body);
+
+    if (response.statusCode == 200) {
+      print(response.data);
+
+
+
+
+      couponModel =    InventoryModel.fromJson(json.decode(response.data));
+
 
     }
 

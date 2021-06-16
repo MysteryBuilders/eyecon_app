@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:eyecon_app/api/eyecon_services.dart';
 import 'package:eyecon_app/model/home_model.dart';
+import 'package:eyecon_app/providers/cart_notifier.dart';
 import 'package:eyecon_app/screens/cart_screen.dart';
 import 'package:eyecon_app/screens/categories_screen.dart';
 import 'package:eyecon_app/screens/login_screen.dart';
@@ -16,6 +17,7 @@ import 'package:eyecon_app/widgets/action_icon.dart';
 import 'package:eyecon_app/widgets/notification_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 class MainScreen extends StatefulWidget {
   static String id = 'MainScreen';
@@ -26,6 +28,11 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   ScreenUtil screenUtil = ScreenUtil();
   Future<HomeModel> home() async{
+    SharedPreferences sharedPreferences =await SharedPreferences.getInstance();
+    int cartCount = sharedPreferences.getInt('Count')??0;
+    Provider.of<CartNumber>(context,listen: false).addCart(cartCount);
+
+
 
 
     eyeconServices services = eyeconServices();
@@ -90,7 +97,7 @@ class _MainScreenState extends State<MainScreen> {
           iconData: Icons.notifications,
 
 
-          notificationCount:  2,),
+          notificationCount:  Provider.of<CartNumber>(context,listen: false).number,),
         ),
           SizedBox(width: 5.w,),
 
@@ -350,7 +357,7 @@ class _MainScreenState extends State<MainScreen> {
 
 
                         Navigator.of(context,rootNavigator: true).push(new MaterialPageRoute(builder: (BuildContext context){
-                          return new ProductDetailsScreen(productId:homeModel.result.newInProduct[index].id.toString());
+                          return new ProductDetailsScreen(productId:homeModel.result.newInProduct[index].productsId.toString());
                         }));
 
                       },
@@ -726,7 +733,7 @@ class _MainScreenState extends State<MainScreen> {
                         GestureDetector(
                           onTap: (){
                             Navigator.of(context,rootNavigator: true).push(new MaterialPageRoute(builder: (BuildContext context){
-                              return new ProductDetailsScreen(productId:homeModel.result.pickedForYou[index].id.toString());
+                              return new ProductDetailsScreen(productId:homeModel.result.pickedForYou[index].productsId.toString());
                             }));
                           },
                           child: Container(

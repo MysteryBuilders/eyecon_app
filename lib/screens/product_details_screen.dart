@@ -6,9 +6,11 @@ import 'package:eyecon_app/api/eyecon_services.dart';
 import 'package:eyecon_app/model/add_cart_model.dart';
 import 'package:eyecon_app/model/attribute_model.dart';
 import 'package:eyecon_app/model/dis_like_model.dart';
+import 'package:eyecon_app/model/inventory_model.dart';
 import 'package:eyecon_app/model/like_model.dart';
 import 'package:eyecon_app/model/login_model.dart';
 import 'package:eyecon_app/model/product_details_model.dart';
+import 'package:eyecon_app/providers/cart_notifier.dart';
 import 'package:eyecon_app/providers/model_hud.dart';
 import 'package:eyecon_app/screens/login_screen.dart';
 import 'package:eyecon_app/screens/photo_screen.dart';
@@ -121,7 +123,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
               iconData: Icons.notifications,
 
 
-              notificationCount:  2,),
+              notificationCount:  Provider.of<CartNumber>(context,listen: false).number,),
             SizedBox(width: 5.w,),
 
 
@@ -633,8 +635,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     if(isLoggedIn){
       if(productInStock>0) {
 
-        final modelHud = Provider.of<ModelHud>(context, listen: false);
-        modelHud.changeIsLoading(true);
+
         String loginData = sharedPreferences.getString(kUserModel);
         String currency = sharedPreferences.getString("currency")??"KWD";
         final body = json.decode(loginData);
@@ -643,57 +644,152 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
         String productId = productDetailsModel.productData[0].productsId
             .toString();
         String productType = productDetailsModel.productData[0].productsType.toString();
-
-        Map<String,dynamic> map = Map();
+        if(productType == '0'){
+          final modelHud = Provider.of<ModelHud>(context, listen: false);
+          modelHud.changeIsLoading(true);
+          Map<String,dynamic> map = Map();
         map['customer_id']= userId;
         map['currency_code'] = currency;
-
-        Map<String,dynamic> productMap = Map();
-        productMap['product_type']= productType;
-        productMap['product_id']= productId;
-        List attributesId = List();
-        for(int i =0;i<attribueList.length;i++){
-          attributesId.add(attribueList[i].values.productsAttributesId);
-        }
-        productMap['products_attributes_id']=attributesId ;
-        productMap['inventory_ref_id']=2 ;
-        List optionsId = List();
-        for(int i =0;i<attribueList.length;i++){
-          optionsId.add(attribueList[i].option.id);
-        }
-        productMap['products_options']=optionsId ;
-        List valuesId = List();
-        for(int i =0;i<attribueList.length;i++){
-          valuesId.add(attribueList[i].values.id);
-        }
-        productMap['products_options_values']=valuesId ;
-        List valuesPrice = List();
-        for(int i =0;i<attribueList.length;i++){
-          valuesPrice.add(attribueList[i].values.price);
-        }
-        productMap['options_values_price']=valuesPrice ;
-        productMap['quantity'] = count;
-        productMap['product_price'] = productDetailsModel.productData[0].productsPrice;
-        List valuesprefex = List();
-        for(int i =0;i<attribueList.length;i++){
-          valuesprefex.add(attribueList[i].values.pricePrefix);
-        }
-        productMap['price_prefix']=valuesprefex ;
-        List products = List();
-        products.add(productMap);
-        map['products'] = products;
-        print(map);
-        eyeconServices services = eyeconServices();
+        List list = List();
+          Map<String,dynamic> productMap = Map();
+          productMap['product_type']= productType;
+           productMap['product_id']= productId;
+          productMap['product_price']= productDetailsModel.productData[0].productsPrice;
+          productMap['quantity']= count;
+          list.add(productMap);
+          map['products'] = list;
+                  eyeconServices services = eyeconServices();
         AddCartModel addCartModel = await services.addCart(map);
         modelHud.changeIsLoading(false);
         String success = addCartModel.success;
+          if(success == "1"){
+            Provider.of<CartNumber>(context,listen: false).updateCart();
+            SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+            int count = sharedPreferences.getInt('Count');
+            sharedPreferences.setInt('Count', count++);
+            Navigator.pop(context);
+
+          }
         String message = addCartModel.message[0].message;
         _scaffoldKey.currentState.showSnackBar(
             SnackBar(content: Text(message)));
-        if(success == "1"){
-          Navigator.pop(context);
+        }else{
+          final modelHud = Provider.of<ModelHud>(context, listen: false);
+          modelHud.changeIsLoading(true);
+          Map map = Map();
+          map['products_id'] = productId;
+          List list = List();
+          for(int i =0;i<attribueList.length;i++){
+            list.add(attribueList[i].values.productsAttributesId);
+            
+          }
+          map['attribute_ids'] = list;
+          eyeconServices services = eyeconServices();
+          InventoryModel inventoryModel = await services.inventory(map);
+          String success = inventoryModel.success;
+          if(success == '1'){
+            int inventoryRefId = inventoryModel.stock[0].inventoryRefId;
+            Map<String,dynamic> map = Map();
+            map['customer_id']= userId;
+            map['currency_code'] = currency;
+            List list = List();
+            Map<String,dynamic> productMap = Map();
+            productMap['product_type']= productType;
+            productMap['product_id']= productId;
+            productMap['inventory_ref_id']= inventoryRefId;
+            productMap['product_price']= productDetailsModel.productData[0].productsPrice;
+            productMap['quantity']= count;
+            list.add(productMap);
+            map['products'] = list;
+            print(map);
+            eyeconServices services = eyeconServices();
+            AddCartModel addCartModel = await services.addCart(map);
+            modelHud.changeIsLoading(false);
+            String success = addCartModel.success;
+            String message = addCartModel.message[0].message;
+            _scaffoldKey.currentState.showSnackBar(
+                SnackBar(content: Text(message)));
+            if(success == "1"){
+              Provider.of<CartNumber>(context,listen: false).updateCart();
+              SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+              int count = sharedPreferences.getInt('Count');
+              sharedPreferences.setInt('Count', count++);
+              Navigator.pop(context);
+
+            }
+
+          }else{
+            modelHud.changeIsLoading(false);
+            _scaffoldKey.currentState.showSnackBar(
+            SnackBar(content: Text(inventoryModel.message)));
+          }
 
         }
+
+//         Map<String,dynamic> map = Map();
+//         map['customer_id']= userId;
+//         map['currency_code'] = currency;
+//
+//         // Map<String,dynamic> productMap = Map();
+//         // productMap['product_type']= productType;
+//         // productMap['product_id']= productId;
+//         // List attributesId = List();
+//         // for(int i =0;i<attribueList.length;i++){
+//         //   attributesId.add(attribueList[i].values.productsAttributesId);
+//         // }
+//         // productMap['products_attributes_id']=attributesId ;
+//         // productMap['inventory_ref_id']=2 ;
+//         // List optionsId = List();
+//         // for(int i =0;i<attribueList.length;i++){
+//         //   optionsId.add(attribueList[i].option.id);
+//         // }
+//         // productMap['products_options']=optionsId ;
+//         // List valuesId = List();
+//         // for(int i =0;i<attribueList.length;i++){
+//         //   valuesId.add(attribueList[i].values.id);
+//         // }
+//         // productMap['products_options_values']=valuesId ;
+//         // List valuesPrice = List();
+//         // for(int i =0;i<attribueList.length;i++){
+//         //   valuesPrice.add(attribueList[i].values.price);
+//         // }
+//         // productMap['options_values_price']=valuesPrice ;
+//         // productMap['quantity'] = count;
+//         // productMap['product_price'] = productDetailsModel.productData[0].productsPrice;
+//         // List valuesprefex = List();
+//         // for(int i =0;i<attribueList.length;i++){
+//         //   valuesprefex.add(attribueList[i].values.pricePrefix);
+//         // }
+//         // productMap['price_prefix']=valuesprefex ;
+//         List products = List();
+//         for(int i =0;i<attribueList.length;i++){
+// Map<String,dynamic> productMap = Map();
+//           productMap['product_type']= productType;
+//           productMap['product_id']= productId;
+// productMap['products_attributes_id']=attribueList[i].values.productsAttributesId;
+// productMap['inventory_ref_id']=2 ;
+// productMap['products_options']=attribueList[i].option.id ;
+// productMap['products_options_values']=attribueList[i].values.id ;
+// productMap['options_values_price']=attribueList[i].values.price;
+// productMap['quantity'] = count;
+// productMap['product_price'] = productDetailsModel.productData[0].productsPrice;
+// productMap['price_prefix']=attribueList[i].values.pricePrefix ;
+// products.add(productMap);
+//         }
+//
+//         map['products'] = products;
+//         print(map);
+//         eyeconServices services = eyeconServices();
+//         AddCartModel addCartModel = await services.addCart(map);
+//         modelHud.changeIsLoading(false);
+//         String success = addCartModel.success;
+//         String message = addCartModel.message[0].message;
+//         _scaffoldKey.currentState.showSnackBar(
+//             SnackBar(content: Text(message)));
+//         if(success == "1"){
+//           Navigator.pop(context);
+//
+//         }
 
 
       }

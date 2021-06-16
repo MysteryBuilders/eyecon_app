@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 
+import 'package:eyecon_app/providers/cart_notifier.dart';
 import 'package:eyecon_app/providers/model_hud.dart';
 import 'package:eyecon_app/screens/categories_screen.dart';
 import 'package:eyecon_app/screens/forget_password_screen.dart';
@@ -114,6 +115,7 @@ class _MyAppState extends State<MyApp> {
                 MultiProvider(
                   providers: [
                     ChangeNotifierProvider<ModelHud>(create: (context) => ModelHud()),
+                    ChangeNotifierProvider<CartNumber>(create: (context) => CartNumber()),
 
                   ],
                   child:
