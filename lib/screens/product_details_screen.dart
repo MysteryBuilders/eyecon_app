@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:eyecon_app/api/eyecon_services.dart';
+import 'package:eyecon_app/model/add_cart_model.dart';
 import 'package:eyecon_app/model/attribute_model.dart';
 import 'package:eyecon_app/model/dis_like_model.dart';
 import 'package:eyecon_app/model/like_model.dart';
@@ -631,6 +632,9 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     bool isLoggedIn = sharedPreferences.getBool(kIsLogin)??false;
     if(isLoggedIn){
       if(productInStock>0) {
+
+        final modelHud = Provider.of<ModelHud>(context, listen: false);
+        modelHud.changeIsLoading(true);
         String loginData = sharedPreferences.getString(kUserModel);
         String currency = sharedPreferences.getString("currency")??"KWD";
         final body = json.decode(loginData);
@@ -643,9 +647,53 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
         Map<String,dynamic> map = Map();
         map['customer_id']= userId;
         map['currency_code'] = currency;
-        map['quantity'] = count;
-        map['quantity'] = count;
 
+        Map<String,dynamic> productMap = Map();
+        productMap['product_type']= productType;
+        productMap['product_id']= productId;
+        List attributesId = List();
+        for(int i =0;i<attribueList.length;i++){
+          attributesId.add(attribueList[i].values.productsAttributesId);
+        }
+        productMap['products_attributes_id']=attributesId ;
+        productMap['inventory_ref_id']=2 ;
+        List optionsId = List();
+        for(int i =0;i<attribueList.length;i++){
+          optionsId.add(attribueList[i].option.id);
+        }
+        productMap['products_options']=optionsId ;
+        List valuesId = List();
+        for(int i =0;i<attribueList.length;i++){
+          valuesId.add(attribueList[i].values.id);
+        }
+        productMap['products_options_values']=valuesId ;
+        List valuesPrice = List();
+        for(int i =0;i<attribueList.length;i++){
+          valuesPrice.add(attribueList[i].values.price);
+        }
+        productMap['options_values_price']=valuesPrice ;
+        productMap['quantity'] = count;
+        productMap['product_price'] = productDetailsModel.productData[0].productsPrice;
+        List valuesprefex = List();
+        for(int i =0;i<attribueList.length;i++){
+          valuesprefex.add(attribueList[i].values.pricePrefix);
+        }
+        productMap['price_prefix']=valuesprefex ;
+        List products = List();
+        products.add(productMap);
+        map['products'] = products;
+        print(map);
+        eyeconServices services = eyeconServices();
+        AddCartModel addCartModel = await services.addCart(map);
+        modelHud.changeIsLoading(false);
+        String success = addCartModel.success;
+        String message = addCartModel.message[0].message;
+        _scaffoldKey.currentState.showSnackBar(
+            SnackBar(content: Text(message)));
+        if(success == "1"){
+          Navigator.pop(context);
+
+        }
 
 
       }
