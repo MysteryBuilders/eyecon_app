@@ -28,9 +28,6 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   ScreenUtil screenUtil = ScreenUtil();
   Future<HomeModel> home() async{
-    SharedPreferences sharedPreferences =await SharedPreferences.getInstance();
-    int cartCount = sharedPreferences.getInt('Count')??0;
-    Provider.of<CartNumber>(context,listen: false).addCart(cartCount);
 
 
 
@@ -40,6 +37,19 @@ class _MainScreenState extends State<MainScreen> {
     return home;
   }
   HomeModel homeModel;
+  Future<void> cart()async{
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    bool isLoggedIn = sharedPreferences.getBool(kIsLogin);
+  if(isLoggedIn){
+    Navigator.of(context,rootNavigator: true).push(new MaterialPageRoute(builder: (BuildContext context){
+      return new CartScreen();
+    }));
+  }else{
+    Navigator.of(context,rootNavigator: true).pushReplacement(new MaterialPageRoute(builder: (BuildContext context){
+      return new LoginScreen();
+    }));
+  }
+  }
   @override
   void initState() {
     // TODO: implement initState
@@ -88,9 +98,9 @@ class _MainScreenState extends State<MainScreen> {
 
         GestureDetector(
           onTap: (){
-            Navigator.of(context,rootNavigator: true).push(new MaterialPageRoute(builder: (BuildContext context){
-              return new CartScreen();
-            }));
+            cart();
+
+
           },
           child: NamedIcon(
 

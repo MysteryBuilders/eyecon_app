@@ -27,7 +27,7 @@ class PlaceOrderModel {
 
   PlaceOrderModel.fromJson(dynamic json) {
     _success = json["success"];
-    _data = json["data"] != null ? Data.fromJson(json["data"]) : null;
+    _data = json["data"] != null|| json["data"] != '[]'? Data.fromJson(json["data"]) : null;
     _customerId = json["customer_id"];
     _message = json["message"];
   }

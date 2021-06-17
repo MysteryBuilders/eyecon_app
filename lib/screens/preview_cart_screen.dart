@@ -4,6 +4,7 @@ import 'package:eyecon_app/model/address_model.dart'as Address;
 import 'package:eyecon_app/model/coupon_model.dart';
 import 'package:eyecon_app/model/place_order_model.dart';
 import 'package:eyecon_app/model/tax_model.dart';
+import 'package:eyecon_app/screens/payment_screen.dart';
 import 'package:eyecon_app/screens/success_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -72,7 +73,7 @@ class _PreviewCartScreenState extends State<PreviewCartScreen> {
     eyeconServices services = eyeconServices();
     Map map2 = Map();
     map2['language_id'] = mLang;
-    map2['customer_id'] = 2;
+    map2['customer_id'] = userId;
     map2['currency_code'] = currency;
     map2['tax_zone_id'] = widget.addressModel.zoneId;
      taxModel = await services.tax(map2);
@@ -81,7 +82,7 @@ class _PreviewCartScreenState extends State<PreviewCartScreen> {
 
     Map map = Map();
     map['language_id'] = mLang;
-    map['customer_id'] = 2;
+    map['customer_id'] = userId;
 
     List<CartModel> cartModel = await services.cart(map);
     return cartModel;
@@ -580,7 +581,7 @@ class _PreviewCartScreenState extends State<PreviewCartScreen> {
 
     Map map = Map();
     map['language_id'] = mLang;
-    map['customer_id'] = 2;
+    map['customer_id'] = userId;
     map['currency_code'] = currency;
     map['code'] = code;
     eyeconServices services = eyeconServices();
@@ -659,7 +660,7 @@ setState(() {
       }
       Map map = Map();
       map['language_id'] = mLang;
-      map['customer_id'] = 2;
+      map['customer_id'] = userId;
       eyeconServices services = eyeconServices();
       cartModel = await services.cart(map);
 
@@ -703,7 +704,7 @@ setState(() {
       }
       Map map = Map();
       map['language_id'] = mLang;
-      map['customer_id'] = 2;
+      map['customer_id'] = userId;
       eyeconServices services = eyeconServices();
       cartModel = await services.cart(map);
 
@@ -730,44 +731,37 @@ setState(() {
     } else {
       mLang = "1";
     }
-    // eyeconServices services = eyeconServices();
-    // Map map = Map();
-    // map['language_id']  = mLang;
-    // map['customer_id']  = 2;
-    // map['cartid']  = cartModel[0].cartId;
-    // map['address_id']  = widget.addressModel.addressId;
-    // map['totalPrice']  = cartModel[0].subTotal;
-    // map['currency_code']  = currency;
-    // map['shipping_method']  = 'dhl';
-    // map['shipping_cost']  = delivery;
-    // map['total_tax']  = tax;
-    // map['paymentType']  = 'card';
-    // map['is_coupon_applied']  = coupounApplied;
-    // map['coupon_amount']  = discountAmout;
-    // map['coupons_code']  = _commentController.text;
-    // map['comments']  = "test";
-    // PlaceOrderModel placeOrderModel = await services.placeOrder(map);
-    // String success = placeOrderModel.success;
-    // modelHud.changeIsLoading(false);
-    // if(success == "1"){
-    //   double totalAmount = double.parse(cartModel[0].subTotal) +tax+ delivery-discountAmout;
-    //   String paymentUrl = placeOrderModel.data.paymentURL;
-    //   print(paymentUrl);
-    //   Navigator.of(context,rootNavigator: true).push(new MaterialPageRoute(builder: (BuildContext context){
-    //     return new SuccessScreen(cartList:cartModel,addressModel: widget.addressModel,
-    //     totalPaidAmount: totalAmount,currency: currency,);
-    //   }));
-    // }
-    double totalAmount = double.parse(cartModel[0].subTotal) +tax+ delivery-discountAmout;
-    // Navigator.of(context,rootNavigator: true).push(new MaterialPageRoute(builder: (BuildContext context)
-    // {
+    eyeconServices services = eyeconServices();
+    Map map = Map();
+    map['language_id']  = mLang;
+    map['customer_id']  = userId;
+    map['cartid']  = cartModel[0].cartId;
+    map['address_id']  = widget.addressModel.addressId;
+    map['totalPrice']  = cartModel[0].subTotal;
+    map['currency_code']  = currency;
+    map['shipping_method']  = 'dhl';
+    map['shipping_cost']  = delivery;
+    map['total_tax']  = tax;
+    map['paymentType']  = 'card';
+    map['is_coupon_applied']  = coupounApplied;
+    map['coupon_amount']  = discountAmout;
+    map['coupons_code']  = _commentController.text;
+    map['comments']  = "test";
+    PlaceOrderModel placeOrderModel = await services.placeOrder(map);
+    String success = placeOrderModel.success;
+    modelHud.changeIsLoading(false);
+    if(success == "1"){
+      double totalAmount = double.parse(cartModel[0].subTotal) +tax+ delivery-discountAmout;
+      String paymentUrl = placeOrderModel.data.paymentURL;
+      print(paymentUrl);
+      Navigator.of(context,rootNavigator: true).push(new MaterialPageRoute(builder: (BuildContext context){
+        return new PaymentScreen(
+          cartList: cartModel, addressModel: widget.addressModel,
+          totalPaidAmount: totalAmount, currency: currency,url: paymentUrl,);
+      }));
+    }
 
-    // }
-    Navigator.of(context,rootNavigator: true).push(new MaterialPageRoute(builder: (BuildContext context){
-         return new SuccessScreen(
-        cartList: cartModel, addressModel: widget.addressModel,
-        totalPaidAmount: totalAmount, currency: currency,);
-    }));
+
 
   }
 

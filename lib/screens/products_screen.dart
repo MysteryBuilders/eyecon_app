@@ -9,6 +9,10 @@ import 'package:eyecon_app/widgets/action_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'cart_screen.dart';
+import 'login_screen.dart';
 class ProductsScreen extends StatefulWidget {
   static String id = 'ProductsScreen';
   GetCategories getCategories;
@@ -35,6 +39,19 @@ class _ProductsScreenState extends State<ProductsScreen> {
 
     });
 
+  }
+  Future<void> cart()async{
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    bool isLoggedIn = sharedPreferences.getBool(kIsLogin);
+    if(isLoggedIn){
+      Navigator.of(context,rootNavigator: true).push(new MaterialPageRoute(builder: (BuildContext context){
+        return new CartScreen();
+      }));
+    }else{
+      Navigator.of(context,rootNavigator: true).pushReplacement(new MaterialPageRoute(builder: (BuildContext context){
+        return new LoginScreen();
+      }));
+    }
   }
   Future<ProductsModel> products(String id) async{
 
@@ -78,12 +95,17 @@ class _ProductsScreenState extends State<ProductsScreen> {
 
         actions: [
 
-          NamedIcon(
+          GestureDetector(
+            onTap: (){
+              cart();
+            },
+            child: NamedIcon(
 
-            iconData: Icons.notifications,
+              iconData: Icons.notifications,
 
 
-            notificationCount:  Provider.of<CartNumber>(context,listen: false).number,),
+              notificationCount:  Provider.of<CartNumber>(context,listen: false).number,),
+          ),
           SizedBox(width: 5.w,),
 
 

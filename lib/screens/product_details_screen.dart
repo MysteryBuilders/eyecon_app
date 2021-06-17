@@ -23,6 +23,8 @@ import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'cart_screen.dart';
 class ProductDetailsScreen extends StatefulWidget {
   String productId;
 
@@ -82,6 +84,19 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
       });
     });
   }
+  Future<void> cart()async{
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    bool isLoggedIn = sharedPreferences.getBool(kIsLogin);
+    if(isLoggedIn){
+      Navigator.of(context,rootNavigator: true).push(new MaterialPageRoute(builder: (BuildContext context){
+        return new CartScreen();
+      }));
+    }else{
+      Navigator.of(context,rootNavigator: true).pushReplacement(new MaterialPageRoute(builder: (BuildContext context){
+        return new LoginScreen();
+      }));
+    }
+  }
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -118,12 +133,17 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
 
           actions: [
 
-            NamedIcon(
+            GestureDetector(
+              onTap: (){
+                cart();
+              },
+              child: NamedIcon(
 
-              iconData: Icons.notifications,
+                iconData: Icons.notifications,
 
 
-              notificationCount:  Provider.of<CartNumber>(context,listen: false).number,),
+                notificationCount:  Provider.of<CartNumber>(context,listen: false).number,),
+            ),
             SizedBox(width: 5.w,),
 
 
@@ -710,10 +730,14 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
             _scaffoldKey.currentState.showSnackBar(
                 SnackBar(content: Text(message)));
             if(success == "1"){
-              Provider.of<CartNumber>(context,listen: false).updateCart();
               SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-              int count = sharedPreferences.getInt('Count');
-              sharedPreferences.setInt('Count', count++);
+              int count = sharedPreferences.getInt('Count')??0;
+              int savedCount  = count+1;
+              sharedPreferences.setInt('Count', savedCount);
+              print('count ---> ${sharedPreferences.getInt('Count')}');
+              Provider.of<CartNumber>(context,listen: false).updateCart();
+
+
               Navigator.pop(context);
 
             }

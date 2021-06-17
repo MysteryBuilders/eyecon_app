@@ -7,6 +7,7 @@ import 'package:eyecon_app/model/cart_model.dart';
 import 'package:eyecon_app/model/delete_cart_model.dart';
 import 'package:eyecon_app/model/login_model.dart';
 import 'package:eyecon_app/model/update_cart_model.dart';
+import 'package:eyecon_app/providers/cart_notifier.dart';
 import 'package:eyecon_app/providers/model_hud.dart';
 import 'package:eyecon_app/screens/address_screen.dart';
 import 'package:eyecon_app/utilities/constants.dart';
@@ -57,7 +58,7 @@ setState(() {
     }
     Map map = Map();
     map['language_id'] = mLang;
-    map['customer_id'] = 2;
+    map['customer_id'] = userId;
     eyeconServices services = eyeconServices();
     List<CartModel> cartModel = await services.cart(map);
     return cartModel;
@@ -109,7 +110,9 @@ setState(() {
               GestureDetector(
                 onTap: (){
                   Map map = Map();
-                  map['id']= 2;
+
+                  map['id']= userId;
+                  print(userId);
                   deleteCart(map);
                 },
                 child: Padding(
@@ -264,9 +267,10 @@ mainAxisAlignment: MainAxisAlignment.spaceAround,
                                               print(quantity);
                                               quantity++;
                                               if(maxCount>quantity ){
+                                                userId = loginModel.data[0].id.toString();
                                                 Map map = Map();
                                                 map['language_id'] = mLang;
-                                                map['customer_id'] = 2;
+                                                map['customer_id'] = userId;
                                                 map['quantity'] =quantity;
                                                 map['item_id'] =cartModel[index].id;
                                                 updateCart(map);
@@ -297,9 +301,10 @@ mainAxisAlignment: MainAxisAlignment.spaceAround,
                                                 print(quantity);
                                                 if(quantity>=minOrder ){
                                                   print(quantity);
+                                                  userId = loginModel.data[0].id.toString();
                                                   Map<String,dynamic> map = Map();
                                                   map['language_id'] = mLang;
-                                                  map['customer_id'] = 2;
+                                                  map['customer_id'] = userId;
                                                   map['quantity'] =quantity;
                                                   map['item_id'] =cartModel[index].id;
                                                   updateCart(map);
@@ -412,7 +417,7 @@ mainAxisAlignment: MainAxisAlignment.spaceAround,
       }
       Map map = Map();
       map['language_id'] = mLang;
-      map['customer_id'] = 2;
+      map['customer_id'] = userId;
       eyeconServices services = eyeconServices();
       cartModel = await services.cart(map);
 
@@ -440,29 +445,11 @@ mainAxisAlignment: MainAxisAlignment.spaceAround,
       setState(() {
 
       });
-      SharedPreferences sharedPreferences = await SharedPreferences
-          .getInstance();
-      String loginData = sharedPreferences.getString(kUserModel);
-      currency = sharedPreferences.getString("currency") ?? "KWD";
-      final body = json.decode(loginData);
-      LoginModel loginModel = LoginModel.fromJson(body);
-      userId = loginModel.data[0].id.toString();
-      String mLanguage = sharedPreferences.getString(LANG_CODE);
+      Provider.of<CartNumber>(context,listen: false).clearCart();
+      SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
 
-      if (mLanguage == 'ar') {
-        mLang = "2";
-      } else {
-        mLang = "1";
-      }
-      Map map = Map();
-      map['language_id'] = mLang;
-      map['customer_id'] = 2;
-      eyeconServices services = eyeconServices();
-      cartModel = await services.cart(map);
-
-      setState(() {
-
-      });
+      sharedPreferences.setInt('Count', 0);
+      Navigator.pop(context);
     }
   }
 

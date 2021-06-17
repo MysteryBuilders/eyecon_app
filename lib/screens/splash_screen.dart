@@ -1,6 +1,8 @@
+import 'package:eyecon_app/providers/cart_notifier.dart';
 import 'package:eyecon_app/screens/main_screen.dart';
 import 'package:eyecon_app/utilities/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'login_screen.dart';
@@ -15,6 +17,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
+
     new Future.delayed(
         const Duration(seconds: 3),
             () {
@@ -36,7 +39,13 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<bool> isLoggedIn()async{
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    SharedPreferences sharedPreferences =await SharedPreferences.getInstance();
+    int cartCount = sharedPreferences.getInt('Count');
+    print('count --> $cartCount');
+
+    Provider.of<CartNumber>(context,listen: false).addCart(cartCount);
+
+
     bool isLoggedIn = sharedPreferences.getBool(kIsLogin)??false;
     return isLoggedIn;
 
